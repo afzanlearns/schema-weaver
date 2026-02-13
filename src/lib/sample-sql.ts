@@ -1,0 +1,121 @@
+export const SAMPLE_SIMPLE = `CREATE TABLE users (
+  id INTEGER PRIMARY KEY AUTO_INCREMENT,
+  username VARCHAR(50) NOT NULL UNIQUE,
+  email VARCHAR(100) NOT NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE posts (
+  id INTEGER PRIMARY KEY AUTO_INCREMENT,
+  title VARCHAR(200) NOT NULL,
+  body TEXT,
+  user_id INTEGER NOT NULL,
+  published BOOLEAN DEFAULT false,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+);
+
+CREATE TABLE comments (
+  id INTEGER PRIMARY KEY AUTO_INCREMENT,
+  post_id INTEGER NOT NULL,
+  user_id INTEGER NOT NULL,
+  content TEXT NOT NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (post_id) REFERENCES posts(id) ON DELETE CASCADE,
+  FOREIGN KEY (user_id) REFERENCES users(id)
+);`;
+
+export const SAMPLE_INLINE_FK = `CREATE TABLE departments (
+  id SERIAL PRIMARY KEY,
+  name VARCHAR(100) NOT NULL,
+  budget DECIMAL(12,2) DEFAULT 0
+);
+
+CREATE TABLE employees (
+  id SERIAL PRIMARY KEY,
+  first_name VARCHAR(50) NOT NULL,
+  last_name VARCHAR(50) NOT NULL,
+  email VARCHAR(100) UNIQUE NOT NULL,
+  department_id INTEGER REFERENCES departments(id),
+  manager_id INTEGER REFERENCES employees(id),
+  salary DECIMAL(10,2),
+  hire_date DATE NOT NULL
+);
+
+CREATE TABLE projects (
+  id SERIAL PRIMARY KEY,
+  name VARCHAR(100) NOT NULL,
+  lead_id INTEGER REFERENCES employees(id),
+  department_id INTEGER REFERENCES departments(id),
+  start_date DATE,
+  end_date DATE,
+  status VARCHAR(20) DEFAULT 'active'
+);
+
+CREATE TABLE project_assignments (
+  id SERIAL PRIMARY KEY,
+  project_id INTEGER REFERENCES projects(id) ON DELETE CASCADE,
+  employee_id INTEGER REFERENCES employees(id) ON DELETE CASCADE,
+  role VARCHAR(50),
+  assigned_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);`;
+
+export const SAMPLE_WORDPRESS = `CREATE TABLE wp_users (
+  ID BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+  user_login VARCHAR(60) NOT NULL DEFAULT '',
+  user_pass VARCHAR(255) NOT NULL DEFAULT '',
+  user_nicename VARCHAR(50) NOT NULL DEFAULT '',
+  user_email VARCHAR(100) NOT NULL DEFAULT '',
+  user_url VARCHAR(100) NOT NULL DEFAULT '',
+  user_registered DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00',
+  user_activation_key VARCHAR(255) NOT NULL DEFAULT '',
+  user_status INT NOT NULL DEFAULT 0,
+  display_name VARCHAR(250) NOT NULL DEFAULT '',
+  PRIMARY KEY (ID)
+);
+
+CREATE TABLE wp_posts (
+  ID BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+  post_author BIGINT UNSIGNED NOT NULL DEFAULT 0,
+  post_date DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00',
+  post_content LONGTEXT NOT NULL,
+  post_title TEXT NOT NULL,
+  post_excerpt TEXT NOT NULL,
+  post_status VARCHAR(20) NOT NULL DEFAULT 'publish',
+  post_type VARCHAR(20) NOT NULL DEFAULT 'post',
+  post_parent BIGINT UNSIGNED NOT NULL DEFAULT 0,
+  PRIMARY KEY (ID),
+  FOREIGN KEY (post_author) REFERENCES wp_users(ID)
+);
+
+CREATE TABLE wp_comments (
+  comment_ID BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+  comment_post_ID BIGINT UNSIGNED NOT NULL DEFAULT 0,
+  comment_author TEXT NOT NULL,
+  comment_author_email VARCHAR(100) NOT NULL DEFAULT '',
+  comment_date DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00',
+  comment_content TEXT NOT NULL,
+  comment_approved VARCHAR(20) NOT NULL DEFAULT '1',
+  user_id BIGINT UNSIGNED NOT NULL DEFAULT 0,
+  PRIMARY KEY (comment_ID),
+  FOREIGN KEY (comment_post_ID) REFERENCES wp_posts(ID),
+  FOREIGN KEY (user_id) REFERENCES wp_users(ID)
+);
+
+CREATE TABLE wp_options (
+  option_id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+  option_name VARCHAR(191) NOT NULL DEFAULT '',
+  option_value LONGTEXT NOT NULL,
+  autoload VARCHAR(20) NOT NULL DEFAULT 'yes',
+  PRIMARY KEY (option_id),
+  UNIQUE (option_name)
+);
+
+CREATE TABLE wp_usermeta (
+  umeta_id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+  user_id BIGINT UNSIGNED NOT NULL DEFAULT 0,
+  meta_key VARCHAR(255) DEFAULT NULL,
+  meta_value LONGTEXT,
+  PRIMARY KEY (umeta_id),
+  FOREIGN KEY (user_id) REFERENCES wp_users(ID)
+);`;
