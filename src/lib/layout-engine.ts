@@ -26,7 +26,7 @@ export class LayoutEngine {
         options: LayoutOptions = { direction: "RIGHT", spacing: "balanced", grouping: true }
     ): Promise<{ nodes: Node[]; edges: Edge[] }> {
         // Stage 1 & 2: Analysis & Grouping
-        const { graph, parentMap } = this.buildGraph(tables, relationships, options.grouping);
+        const { graph, parentMap } = this.buildGraph(tables, relationships, options);
 
         // Stage 3 & 4: ELK Layout & Routing
         const layout = await elk.layout(graph);
@@ -41,15 +41,17 @@ export class LayoutEngine {
     private static buildGraph(
         tables: Table[],
         relationships: Relationship[],
-        enableGrouping: boolean = true
+        options: LayoutOptions
     ): { graph: ElkNode; parentMap: Map<string, string> } {
         const parentMap = new Map<string, string>();
         const children: ElkNode[] = [];
-        const edges: ElkPrimitiveEdge[] = [];
+        // Use ElkExtendedEdge to support 'sources' and 'targets' arrays
+        const edges: import("elkjs").ElkExtendedEdge[] = [];
 
         // --- Domain Clustering (Stage 2) ---
         // Detect connected components (clusters)
         const adjacency = new Map<string, Set<string>>();
+        const enableGrouping = options.grouping ?? true;
         tables.forEach(t => adjacency.set(t.name, new Set()));
         relationships.forEach(r => {
             adjacency.get(r.fromTable)?.add(r.toTable);
@@ -129,27 +131,35 @@ export class LayoutEngine {
             });
         });
 
-        // Adaptive Spacing (Stage 5)
-        // Scale spacing based on number of tables to prevent overlapping in dense schemas
+        // Adaptive Spacing (Stage 5) & Density Modes
+        // Base spacing from options
+        const density = options.spacing || "balanced";
+        const baseSettings = LayoutEngine.SPACING_MAP[density];
+
+        // Scale spacing based on number of tables if needed, or stick to presets
+        // User requested: "Spacing adjustments must scale proportionally with entity count"
+        // Let's combine preset with a mild scaling factor for very large graphs
         const nodeCount = tables.length;
-        const baseSpacing = 80;
-        const scalingFactor = nodeCount > 20 ? 2 : nodeCount > 10 ? 1.5 : 1;
-        const nodeNodeSpacing = Math.floor(baseSpacing * scalingFactor).toString();
-        const layerSpacing = Math.floor(100 * scalingFactor).toString();
+        const scalingFactor = nodeCount > 20 ? 1.2 : 1;
+
+        const nodeNodeSpacing = Math.floor(baseSettings.nodeNode * scalingFactor).toString();
+        const layerSpacing = Math.floor(baseSettings.edgeNode * 1.5 * scalingFactor).toString(); // EdgeNode is usually smaller, layer spacing needs to be larger
 
         // Edge Routing (Stage 4)
-        // Default to ORTHOGONAL for clean diagrams, but could be SPLINES
         const edgeRouting = "ORTHOGONAL";
+
+        const direction = options.direction || "RIGHT";
 
         const graph: ElkNode = {
             id: "root",
             layoutOptions: {
                 "elk.algorithm": "layered",
-                "elk.direction": "RIGHT",
-                "elk.spacing.nodeNode": nodeNodeSpacing, // Spacing between clusters/nodes
+                "elk.direction": direction,
+                "elk.spacing.nodeNode": nodeNodeSpacing,
                 "elk.layered.spacing.nodeNodeBetweenLayers": layerSpacing,
                 "elk.edgeRouting": edgeRouting,
-                "elk.separateConnectedComponents": "false", // We handle clustering manually above
+                "elk.separateConnectedComponents": "false",
+                "elk.padding": "[top=50,left=50,bottom=50,right=50]",
             },
             children,
             edges,
