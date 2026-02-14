@@ -64,17 +64,19 @@ const Visualize = () => {
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
   const [viewMode, setViewMode] = useState<"schema" | "er">("schema");
 
+  // Interaction Mode State
+  const [interactionMode, setInteractionMode] = useState<"inspect" | "relations">("inspect");
+
   // Layout Controls State
   const [layoutDir, setLayoutDir] = useState<"RIGHT" | "DOWN">("RIGHT");
   const [layoutSpacing, setLayoutSpacing] = useState<"compact" | "balanced" | "spacious">("balanced");
   const [enableGrouping, setEnableGrouping] = useState(true);
 
-  // Focus Mode State
+  // Focus/Highlight State
   const [focusedNodeId, setFocusedNodeId] = useState<string | null>(null);
 
   const applyLayout = useCallback(async (parsed: ParseResult) => {
     if (viewMode === "er") {
-      // Existing ER View logic (keeps old layout for now or needs update if Part 2 touches this)
       const { nodes: erNodes, edges: erEdges } = generateERNodesAndEdges(parsed.tables, parsed.relationships);
       setNodes(erNodes);
       setEdges(erEdges);
@@ -102,12 +104,30 @@ const Visualize = () => {
     setResult(parsed);
     if (parsed.errors.length > 0) parsed.errors.forEach((e) => toast.warning(e));
 
-    // Initial layout
     applyLayout(parsed);
   }, [navigate, applyLayout]);
 
-  // Focus Mode Logic
+  // Update draggable state when interaction mode changes
   useEffect(() => {
+    setNodes((nds) => nds.map((n) => ({
+      ...n,
+      draggable: interactionMode === "inspect",
+      style: { ...n.style, opacity: 1 } as React.CSSProperties,
+    })));
+  }, [interactionMode, setNodes]);
+
+  // Focus/Highlight Logic — only active in "relations" mode
+  useEffect(() => {
+    if (interactionMode !== "relations") {
+      setNodes((nds) => nds.map(n => ({ ...n, style: { ...n.style, opacity: 1 } })));
+      setEdges((eds) => eds.map(e => ({
+        ...e,
+        style: { ...e.style, strokeOpacity: 1, stroke: "hsl(var(--muted-foreground))" },
+        animated: false,
+      })));
+      return;
+    }
+
     setNodes((nds) =>
       nds.map((node) => {
         if (!focusedNodeId) {
@@ -117,8 +137,6 @@ const Visualize = () => {
         const isNeighbor = edges.some(
           (e) => (e.source === focusedNodeId && e.target === node.id) || (e.target === focusedNodeId && e.source === node.id)
         );
-        const isCluster = node.type === 'group'; // Keep clusters visible-ish? Or dim them too.
-
         return {
           ...node,
           style: {
@@ -136,28 +154,29 @@ const Visualize = () => {
         style: {
           ...edge.style,
           strokeOpacity: !focusedNodeId || edge.source === focusedNodeId || edge.target === focusedNodeId ? 1 : 0.1,
-          stroke: !focusedNodeId || edge.source === focusedNodeId || edge.target === focusedNodeId ? "hsl(var(--muted-foreground))" : "hsl(var(--muted))",
+          stroke: !focusedNodeId || edge.source === focusedNodeId || edge.target === focusedNodeId ? "hsl(var(--primary))" : "hsl(var(--muted))",
         },
         animated: edge.source === focusedNodeId || edge.target === focusedNodeId,
       }))
     );
-  }, [focusedNodeId, edges, setNodes, setEdges]);
+  }, [focusedNodeId, edges, setNodes, setEdges, interactionMode]);
 
   const onNodeMouseEnter = useCallback((_: React.MouseEvent, node: Node) => {
-    setFocusedNodeId(node.id);
-  }, []);
+    if (interactionMode === "relations") setFocusedNodeId(node.id);
+  }, [interactionMode]);
 
   const onNodeMouseLeave = useCallback(() => {
-    setFocusedNodeId(null);
-  }, []);
+    if (interactionMode === "relations") setFocusedNodeId(null);
+  }, [interactionMode]);
 
   const onNodeClick = useCallback(
     (_: React.MouseEvent, node: Node) => {
+      if (interactionMode !== "inspect") return;
       if (viewMode !== "schema") return;
       const table = result?.tables.find((t) => t.name === node.id);
       if (table) setSelectedTable(table);
     },
-    [result, viewMode]
+    [result, viewMode, interactionMode]
   );
 
   const handleExportMarkdown = () => {
@@ -225,6 +244,28 @@ const Visualize = () => {
             onClick={() => setViewMode("er")}
           >
             <Eye className="h-3.5 w-3.5" /> ER Diagram
+          </button>
+        </div>
+
+        <div className="h-4 w-px bg-border mx-1" />
+
+        {/* Interaction Mode Toggle */}
+        <div className="flex border border-border rounded overflow-hidden">
+          <button
+            className={`px-3 py-1 text-xs font-medium flex items-center gap-1 transition-colors ${interactionMode === "inspect" ? "bg-secondary text-secondary-foreground" : "bg-card text-foreground hover:bg-accent"
+              }`}
+            onClick={() => setInteractionMode("inspect")}
+            title="Inspect Mode: Drag nodes, click to view details"
+          >
+            <Maximize2 className="h-3.5 w-3.5" /> Inspect
+          </button>
+          <button
+            className={`px-3 py-1 text-xs font-medium flex items-center gap-1 transition-colors ${interactionMode === "relations" ? "bg-secondary text-secondary-foreground" : "bg-card text-foreground hover:bg-accent"
+              }`}
+            onClick={() => setInteractionMode("relations")}
+            title="Relations Mode: Hover to trace connections, fixed layout"
+          >
+            <Minimize2 className="h-3.5 w-3.5" /> Relations
           </button>
         </div>
 
