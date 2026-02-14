@@ -1,7 +1,7 @@
 import React, { useCallback, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
-  Upload, FileText, Database, Zap, Code, FileJson, Save, LayoutGrid, Eye,
+  Upload, FileText, Database, Zap, Code, FileJson, Save, LayoutGrid, Eye, Sun, Moon,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
@@ -12,6 +12,7 @@ import {
 import { SAMPLE_SIMPLE, SAMPLE_INLINE_FK, SAMPLE_WORDPRESS } from "@/lib/sample-sql";
 import { parseSQL } from "@/lib/sql-parser";
 import { toast } from "sonner";
+import { useTheme } from "next-themes";
 
 const FEATURES = [
   { icon: Database, title: "SQL to ER Diagram", desc: "Instantly visualize your CREATE TABLE statements as interactive, draggable entity-relationship diagrams." },
@@ -29,6 +30,20 @@ const FAQS = [
   { q: "How are TypeScript types derived?", a: "SQL types are mapped to TypeScript equivalents: INT → number, VARCHAR → string, BOOLEAN → boolean, JSON → Record<string, unknown>, TIMESTAMP → string, and so on. Nullable columns become optional fields." },
   { q: "Is my schema stored securely?", a: "All data stays in your browser. Schema Weaver uses localStorage for saved diagrams and sessionStorage for the active session. Nothing is sent to any server." },
 ];
+const ThemeToggle = () => {
+  const { theme, setTheme } = useTheme();
+  return (
+    <Button
+      variant="ghost"
+      size="sm"
+      onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+      aria-label="Toggle theme"
+    >
+      <Sun className="h-4 w-4 hidden dark:block" />
+      <Moon className="h-4 w-4 block dark:hidden" />
+    </Button>
+  );
+};
 
 const Index = () => {
   const [sqlText, setSqlText] = useState("");
@@ -98,6 +113,7 @@ const Index = () => {
             <Button variant="ghost" size="sm" onClick={() => scrollTo("about")}>About</Button>
             <Button variant="ghost" size="sm" onClick={() => scrollTo("faq")}>FAQ</Button>
             <Button variant="ghost" size="sm" onClick={() => navigate("/my-diagrams")}>My Diagrams</Button>
+            <ThemeToggle />
           </div>
         </div>
       </nav>
