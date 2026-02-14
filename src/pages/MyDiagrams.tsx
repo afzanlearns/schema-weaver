@@ -27,7 +27,7 @@ const MyDiagrams = () => {
         <div className="container mx-auto flex items-center justify-between py-4 px-4">
           <div className="flex items-center gap-2">
             <Database className="h-6 w-6 text-primary" />
-            <h1 className="text-xl font-bold text-foreground">SchemaMap</h1>
+            <h1 className="text-xl font-bold text-foreground">Schema Weaver</h1>
           </div>
           <Button variant="ghost" onClick={() => navigate("/")}>
             <ArrowLeft className="h-4 w-4 mr-1" /> Back
