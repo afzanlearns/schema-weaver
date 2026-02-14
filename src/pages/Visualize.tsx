@@ -9,6 +9,7 @@ import {
   useEdgesState,
   type Node,
   type Edge,
+  Panel,
 } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
 import { parseSQL } from "@/lib/sql-parser";
@@ -16,6 +17,7 @@ import { generateAllInterfaces } from "@/lib/ts-generator";
 import { generateMarkdown } from "@/lib/markdown-exporter";
 import { saveDiagram } from "@/lib/storage";
 import { generateERNodesAndEdges } from "@/lib/er-layout";
+import { LayoutEngine, type LayoutOptions } from "@/lib/layout-engine";
 import type { ParseResult, Table } from "@/lib/types";
 import TableNode from "@/components/TableNode";
 import EREntityNode from "@/components/EREntityNode";
@@ -23,6 +25,15 @@ import ERAttributeNode from "@/components/ERAttributeNode";
 import ERRelationshipNode from "@/components/ERRelationshipNode";
 import TableDetailPanel from "@/components/TableDetailPanel";
 import { Button } from "@/components/ui/button";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Switch } from "@/components/ui/switch";
+import { Label } from "@/components/ui/label";
 import {
   ArrowLeft,
   LayoutGrid,
@@ -33,6 +44,8 @@ import {
   Database,
   Eye,
   Table as TableIcon,
+  Maximize2,
+  Minimize2,
 } from "lucide-react";
 import { toast } from "sonner";
 
@@ -43,18 +56,6 @@ const erNodeTypes = {
   erRelationship: ERRelationshipNode,
 };
 
-function autoLayout(tables: Table[]): Record<string, { x: number; y: number }> {
-  const positions: Record<string, { x: number; y: number }> = {};
-  const cols = Math.ceil(Math.sqrt(tables.length));
-  tables.forEach((t, i) => {
-    positions[t.name] = {
-      x: (i % cols) * 320,
-      y: Math.floor(i / cols) * 300,
-    };
-  });
-  return positions;
-}
-
 const Visualize = () => {
   const navigate = useNavigate();
   const [result, setResult] = useState<ParseResult | null>(null);
@@ -63,34 +64,36 @@ const Visualize = () => {
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
   const [viewMode, setViewMode] = useState<"schema" | "er">("schema");
 
-  const buildSchemaView = useCallback((parsed: ParseResult) => {
-    const positions = autoLayout(parsed.tables);
-    const newNodes: Node[] = parsed.tables.map((t) => ({
-      id: t.name,
-      type: "tableNode",
-      position: positions[t.name],
-      data: { label: t.name, columns: t.columns },
-    }));
-    const newEdges: Edge[] = parsed.relationships.map((r, i) => ({
-      id: `e-${i}`,
-      source: r.toTable,
-      target: r.fromTable,
-      sourceHandle: null,
-      targetHandle: null,
-      label: `${r.fromColumn} → ${r.toColumn}`,
-      style: { stroke: "hsl(var(--muted-foreground))" },
-      labelStyle: { fontSize: 10, fill: "hsl(var(--muted-foreground))" },
-      animated: true,
-    }));
-    setNodes(newNodes);
-    setEdges(newEdges);
-  }, [setNodes, setEdges]);
+  // Layout Controls State
+  const [layoutDir, setLayoutDir] = useState<"RIGHT" | "DOWN">("RIGHT");
+  const [layoutSpacing, setLayoutSpacing] = useState<"compact" | "balanced" | "spacious">("balanced");
+  const [enableGrouping, setEnableGrouping] = useState(true);
 
-  const buildERView = useCallback((parsed: ParseResult) => {
-    const { nodes: erNodes, edges: erEdges } = generateERNodesAndEdges(parsed.tables, parsed.relationships);
-    setNodes(erNodes);
-    setEdges(erEdges);
-  }, [setNodes, setEdges]);
+  // Focus Mode State
+  const [focusedNodeId, setFocusedNodeId] = useState<string | null>(null);
+
+  const applyLayout = useCallback(async (parsed: ParseResult) => {
+    if (viewMode === "er") {
+      // Existing ER View logic (keeps old layout for now or needs update if Part 2 touches this)
+      const { nodes: erNodes, edges: erEdges } = generateERNodesAndEdges(parsed.tables, parsed.relationships);
+      setNodes(erNodes);
+      setEdges(erEdges);
+      return;
+    }
+
+    try {
+      const { nodes: layoutNodes, edges: layoutEdges } = await LayoutEngine.calculateLayout(
+        parsed.tables,
+        parsed.relationships,
+        { direction: layoutDir, spacing: layoutSpacing, grouping: enableGrouping }
+      );
+      setNodes(layoutNodes);
+      setEdges(layoutEdges);
+    } catch (error) {
+      console.error("Layout calculation failed:", error);
+      toast.error("Layout calculation failed");
+    }
+  }, [viewMode, layoutDir, layoutSpacing, enableGrouping, setNodes, setEdges]);
 
   useEffect(() => {
     const sql = sessionStorage.getItem("schemamap-sql");
@@ -98,9 +101,55 @@ const Visualize = () => {
     const parsed = parseSQL(sql);
     setResult(parsed);
     if (parsed.errors.length > 0) parsed.errors.forEach((e) => toast.warning(e));
-    if (viewMode === "schema") buildSchemaView(parsed);
-    else buildERView(parsed);
-  }, [navigate, viewMode, buildSchemaView, buildERView]);
+
+    // Initial layout
+    applyLayout(parsed);
+  }, [navigate, applyLayout]);
+
+  // Focus Mode Logic
+  useEffect(() => {
+    setNodes((nds) =>
+      nds.map((node) => {
+        if (!focusedNodeId) {
+          return { ...node, style: { ...node.style, opacity: 1 } };
+        }
+        const isFocused = node.id === focusedNodeId;
+        const isNeighbor = edges.some(
+          (e) => (e.source === focusedNodeId && e.target === node.id) || (e.target === focusedNodeId && e.source === node.id)
+        );
+        const isCluster = node.type === 'group'; // Keep clusters visible-ish? Or dim them too.
+
+        return {
+          ...node,
+          style: {
+            ...node.style,
+            opacity: isFocused || isNeighbor ? 1 : 0.2,
+            transition: 'opacity 0.2s ease-in-out',
+          },
+        };
+      })
+    );
+
+    setEdges((eds) =>
+      eds.map((edge) => ({
+        ...edge,
+        style: {
+          ...edge.style,
+          strokeOpacity: !focusedNodeId || edge.source === focusedNodeId || edge.target === focusedNodeId ? 1 : 0.1,
+          stroke: !focusedNodeId || edge.source === focusedNodeId || edge.target === focusedNodeId ? "hsl(var(--muted-foreground))" : "hsl(var(--muted))",
+        },
+        animated: edge.source === focusedNodeId || edge.target === focusedNodeId,
+      }))
+    );
+  }, [focusedNodeId, edges, setNodes, setEdges]);
+
+  const onNodeMouseEnter = useCallback((_: React.MouseEvent, node: Node) => {
+    setFocusedNodeId(node.id);
+  }, []);
+
+  const onNodeMouseLeave = useCallback(() => {
+    setFocusedNodeId(null);
+  }, []);
 
   const onNodeClick = useCallback(
     (_: React.MouseEvent, node: Node) => {
@@ -110,16 +159,6 @@ const Visualize = () => {
     },
     [result, viewMode]
   );
-
-  const handleAutoLayout = () => {
-    if (!result) return;
-    if (viewMode === "schema") {
-      const positions = autoLayout(result.tables);
-      setNodes((nds) => nds.map((n) => ({ ...n, position: positions[n.id] || n.position })));
-    } else {
-      buildERView(result);
-    }
-  };
 
   const handleExportMarkdown = () => {
     if (!result) return;
@@ -165,7 +204,7 @@ const Visualize = () => {
 
   return (
     <div className="h-screen flex flex-col bg-background">
-      <div className="border-b border-border px-4 py-2 flex items-center gap-2 flex-wrap">
+      <div className="border-b border-border px-4 py-2 flex items-center gap-2 flex-wrap bg-card">
         <Button variant="ghost" size="sm" onClick={() => navigate("/")}>
           <ArrowLeft className="h-4 w-4 mr-1" /> Back
         </Button>
@@ -174,54 +213,85 @@ const Visualize = () => {
         {/* View mode toggle */}
         <div className="flex border border-border rounded overflow-hidden">
           <button
-            className={`px-3 py-1 text-xs font-medium flex items-center gap-1 transition-colors ${
-              viewMode === "schema" ? "bg-primary text-primary-foreground" : "bg-card text-foreground hover:bg-accent"
-            }`}
+            className={`px-3 py-1 text-xs font-medium flex items-center gap-1 transition-colors ${viewMode === "schema" ? "bg-primary text-primary-foreground" : "bg-card text-foreground hover:bg-accent"
+              }`}
             onClick={() => setViewMode("schema")}
           >
             <TableIcon className="h-3.5 w-3.5" /> Schema
           </button>
           <button
-            className={`px-3 py-1 text-xs font-medium flex items-center gap-1 transition-colors ${
-              viewMode === "er" ? "bg-primary text-primary-foreground" : "bg-card text-foreground hover:bg-accent"
-            }`}
+            className={`px-3 py-1 text-xs font-medium flex items-center gap-1 transition-colors ${viewMode === "er" ? "bg-primary text-primary-foreground" : "bg-card text-foreground hover:bg-accent"
+              }`}
             onClick={() => setViewMode("er")}
           >
             <Eye className="h-3.5 w-3.5" /> ER Diagram
           </button>
         </div>
 
-        <div className="h-4 w-px bg-border mx-1" />
-        <Button variant="outline" size="sm" onClick={handleAutoLayout}>
-          <LayoutGrid className="h-4 w-4 mr-1" /> Auto Layout
-        </Button>
-        <Button variant="outline" size="sm" onClick={handleExportMarkdown}>
-          <FileText className="h-4 w-4 mr-1" /> Markdown
-        </Button>
-        <Button variant="outline" size="sm" onClick={handleExportJSON}>
-          <FileJson className="h-4 w-4 mr-1" /> JSON
-        </Button>
-        <Button variant="outline" size="sm" onClick={handleGenerateAllTS}>
-          <Code className="h-4 w-4 mr-1" /> All TypeScript
-        </Button>
-        <Button variant="outline" size="sm" onClick={handleSave}>
-          <Save className="h-4 w-4 mr-1" /> Save
-        </Button>
+        {/* Layout Controls */}
+        {viewMode === "schema" && (
+          <>
+            <div className="h-4 w-px bg-border mx-1" />
+            <Select value={layoutDir} onValueChange={(v: "RIGHT" | "DOWN") => setLayoutDir(v)}>
+              <SelectTrigger className="h-8 w-[100px] text-xs">
+                <SelectValue placeholder="Direction" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="RIGHT">Horizontal</SelectItem>
+                <SelectItem value="DOWN">Vertical</SelectItem>
+              </SelectContent>
+            </Select>
+
+            <Select value={layoutSpacing} onValueChange={(v: any) => setLayoutSpacing(v)}>
+              <SelectTrigger className="h-8 w-[100px] text-xs">
+                <SelectValue placeholder="Spacing" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="compact">Compact</SelectItem>
+                <SelectItem value="balanced">Balanced</SelectItem>
+                <SelectItem value="spacious">Spacious</SelectItem>
+              </SelectContent>
+            </Select>
+
+            <div className="flex items-center space-x-2">
+              <Switch id="grouping" checked={enableGrouping} onCheckedChange={setEnableGrouping} />
+              <Label htmlFor="grouping" className="text-xs">Cluster</Label>
+            </div>
+
+            <Button variant="outline" size="sm" onClick={() => result && applyLayout(result)} title="Re-calculate Layout">
+              <LayoutGrid className="h-4 w-4" />
+            </Button>
+          </>
+        )}
+
         <div className="flex-1" />
-        <div className="flex items-center gap-1 text-sm text-muted-foreground">
-          <Database className="h-4 w-4" />
-          {result?.tables.length ?? 0} tables
+
+        <div className="flex items-center gap-1">
+          <Button variant="ghost" size="icon" onClick={handleExportMarkdown} title="Export Markdown">
+            <FileText className="h-4 w-4" />
+          </Button>
+          <Button variant="ghost" size="icon" onClick={handleExportJSON} title="Export JSON">
+            <FileJson className="h-4 w-4" />
+          </Button>
+          <Button variant="ghost" size="icon" onClick={handleGenerateAllTS} title="Copy TypeScript">
+            <Code className="h-4 w-4" />
+          </Button>
+          <Button variant="ghost" size="icon" onClick={handleSave} title="Save Diagram">
+            <Save className="h-4 w-4" />
+          </Button>
         </div>
       </div>
 
       <div className="flex-1 flex overflow-hidden">
-        <div className="flex-1">
+        <div className="flex-1 relative">
           <ReactFlow
             nodes={nodes}
             edges={edges}
             onNodesChange={onNodesChange}
             onEdgesChange={onEdgesChange}
             onNodeClick={onNodeClick}
+            onNodeMouseEnter={onNodeMouseEnter}
+            onNodeMouseLeave={onNodeMouseLeave}
             nodeTypes={currentNodeTypes}
             fitView
             minZoom={0.1}
@@ -233,6 +303,9 @@ const Visualize = () => {
               nodeColor={() => "hsl(var(--primary))"}
               maskColor="hsl(var(--background) / 0.7)"
             />
+            <Panel position="bottom-right" className="bg-background/80 p-2 rounded border border-border text-xs text-muted-foreground">
+              {result?.tables.length ?? 0} tables • {edges.length} relationships
+            </Panel>
           </ReactFlow>
         </div>
         {selectedTable && viewMode === "schema" && (
