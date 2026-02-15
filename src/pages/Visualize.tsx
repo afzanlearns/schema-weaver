@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   ReactFlow,
@@ -9,6 +9,7 @@ import {
   useEdgesState,
   type Node,
   type Edge,
+  type ReactFlowInstance,
   Panel,
 } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
@@ -75,11 +76,16 @@ const Visualize = () => {
   // Focus/Highlight State
   const [focusedNodeId, setFocusedNodeId] = useState<string | null>(null);
 
+  // Fit View State
+  const rfInstance = useRef<ReactFlowInstance | null>(null);
+  const [layoutVersion, setLayoutVersion] = useState(0);
+
   const applyLayout = useCallback(async (parsed: ParseResult) => {
     if (viewMode === "er") {
       const { nodes: erNodes, edges: erEdges } = generateERNodesAndEdges(parsed.tables, parsed.relationships);
       setNodes(erNodes);
       setEdges(erEdges);
+      setLayoutVersion((v) => v + 1);
       return;
     }
 
@@ -91,11 +97,24 @@ const Visualize = () => {
       );
       setNodes(layoutNodes);
       setEdges(layoutEdges);
+      setLayoutVersion((v) => v + 1);
     } catch (error) {
       console.error("Layout calculation failed:", error);
       toast.error("Layout calculation failed");
     }
   }, [viewMode, layoutDir, layoutSpacing, enableGrouping, setNodes, setEdges]);
+
+  // Auto Fit View after layout changes
+  useEffect(() => {
+    if (layoutVersion === 0) return;
+    const timer = setTimeout(() => {
+      if (rfInstance.current) {
+        rfInstance.current.fitView({ padding: 0.15, duration: 300 });
+        toast.info("Diagram adjusted to fit screen", { duration: 1500 });
+      }
+    }, 80);
+    return () => clearTimeout(timer);
+  }, [layoutVersion]);
 
   useEffect(() => {
     const sql = sessionStorage.getItem("schemamap-sql");
@@ -334,7 +353,7 @@ const Visualize = () => {
             onNodeMouseEnter={onNodeMouseEnter}
             onNodeMouseLeave={onNodeMouseLeave}
             nodeTypes={currentNodeTypes}
-            fitView
+            onInit={(instance) => { rfInstance.current = instance; }}
             minZoom={0.1}
             maxZoom={2}
           >
