@@ -47,55 +47,55 @@ const FEATURES = [
   {
     icon: Database,
     title: "SQL → ER & Schema Diagrams",
-    desc: "Instantly transform raw CREATE TABLE statements into both conceptual ER diagrams and structured schema views for complete structural understanding.",
+    desc: <>Instantly transform raw CREATE TABLE statements into both <em>conceptual ER diagrams</em> and structured schema views for complete structural understanding.</>,
   },
   {
     icon: GitBranch,
     title: "Interactive Relationship Exploration",
-    desc: "Hover over any node to visually trace its direct relationships across the graph, making dependencies and data flow immediately clear.",
+    desc: <>Hover over any node to visually trace its <em>direct relationships</em> across the graph, making dependencies and data flow immediately clear.</>,
   },
   {
     icon: MousePointerClick,
     title: "Inspect & Edit Mode",
-    desc: "Select nodes to view detailed properties, constraints, and connections, and freely reposition them to explore schema structure interactively.",
+    desc: <>Select nodes to view detailed properties, constraints, and connections, and freely reposition them to <em>explore schema structure</em> interactively.</>,
   },
   {
     icon: Sparkles,
     title: "Intelligent Layout Modes",
-    desc: "Automatically adapt diagram organization using cluster, compact, and spacious modes to keep even complex schemas readable.",
+    desc: <>Automatically adapt diagram organization using <em>cluster, compact, and spacious</em> modes to keep even complex schemas readable.</>,
   },
   {
     icon: Code,
     title: "Type-Safe Interface Generation",
-    desc: "Generate clean TypeScript interfaces directly from your schema with accurate type mapping and nullability awareness.",
+    desc: <>Generate clean <em>TypeScript interfaces</em> directly from your schema with accurate type mapping and nullability awareness.</>,
   },
   {
     icon: FileDown,
     title: "Instant Documentation Export",
-    desc: "Export complete schema documentation as structured Markdown, ready for READMEs, onboarding guides, and internal docs.",
+    desc: <>Export complete <em>schema documentation</em> as structured Markdown, ready for READMEs, onboarding guides, and internal docs.</>,
   },
 ];
 
 const FAQS = [
   {
     q: "Does the app execute SQL queries?",
-    a: "No. Schema Weaver only parses SQL definitions to extract structural information. It never executes queries or connects to your database.",
+    a: <>No. Schema Weaver only <em>parses SQL definitions</em> to extract structural information. It never executes queries or connects to your database.</>,
   },
   {
     q: "Is my schema processed client-side?",
-    a: "Yes. All parsing and diagram generation happen entirely in your browser. Your SQL is not sent to any server unless you explicitly save a diagram.",
+    a: <>Yes. All parsing and diagram generation happen entirely <em>in your browser</em>. Your SQL is not sent to any server unless you explicitly save a diagram.</>,
   },
   {
     q: "Can I edit diagrams after generation?",
-    a: "Yes. In Inspect mode, you can drag and reposition nodes, explore properties, and interactively adjust the layout while preserving relationships.",
+    a: <>Yes. In <em>Inspect mode</em>, you can drag and reposition nodes, explore properties, and interactively adjust the layout while preserving relationships.</>,
   },
   {
     q: "What is the difference between ER and Schema diagram modes?",
-    a: "ER mode presents a conceptual view with entities, attributes, and relationships, while Schema mode shows a structured table-centric view with columns, keys, and constraints.",
+    a: <><em>ER mode</em> presents a conceptual view with entities, attributes, and relationships, while <em>Schema mode</em> shows a structured table-centric view with columns, keys, and constraints.</>,
   },
   {
     q: "How are TypeScript interfaces generated?",
-    a: "TypeScript types are derived by mapping SQL column definitions to their closest TypeScript equivalents, including handling nullability and defaults.",
+    a: <>TypeScript types are derived by mapping <em>SQL column definitions</em> to their closest TypeScript equivalents, including handling nullability and defaults.</>,
   },
 ];
 
@@ -311,8 +311,8 @@ const Index = () => {
           </h1>
 
           <p className="mx-auto mt-5 max-w-xl text-center text-[15px] leading-relaxed text-muted-foreground sm:text-base">
-            Paste or upload your SQL to instantly generate interactive ER
-            diagrams, TypeScript interfaces, and Markdown documentation — all in
+            Paste or upload your SQL to instantly generate <em>interactive ER
+              diagrams</em>, <em>TypeScript interfaces</em>, and Markdown documentation — all in
             your browser.
           </p>
 
@@ -586,12 +586,12 @@ const Index = () => {
             <code className="font-mono text-xs bg-muted/30 px-1.5 py-0.5 rounded">
               CREATE TABLE
             </code>{" "}
-            statements into clear, interactive structural diagrams, type-safe
+            statements into clear, <em>interactive structural diagrams</em>, type-safe
             TypeScript interfaces, and portable documentation.
           </p>
           <p className="mt-4 text-[15px] leading-relaxed text-muted-foreground">
             Built for developer productivity — whether you're onboarding onto a
-            new project, reviewing a migration, or documenting your schema for
+            new project, reviewing a migration, or <em>documenting your schema</em> for
             your team. Everything runs entirely client-side with zero setup.
           </p>
         </div>
