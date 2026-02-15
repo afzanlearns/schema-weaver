@@ -116,6 +116,18 @@ const Visualize = () => {
     return () => mq.removeEventListener('change', handler);
   }, []);
 
+  // Lock body scroll on mobile to prevent page scrolling past the canvas
+  useEffect(() => {
+    if (isMobile) {
+      document.body.style.overflow = 'hidden';
+      document.documentElement.style.overflow = 'hidden';
+    }
+    return () => {
+      document.body.style.overflow = '';
+      document.documentElement.style.overflow = '';
+    };
+  }, [isMobile]);
+
   // Legend Highlight State
   const [legendHover, setLegendHover] = useState<LegendType>(null);
   const [lockedLegend, setLockedLegend] = useState<LegendType>(null);
@@ -176,7 +188,7 @@ const Visualize = () => {
     if (layoutVersion === 0) return;
     const timer = setTimeout(() => {
       if (rfInstance.current) {
-        rfInstance.current.fitView({ padding: 0.15, duration: 300 });
+        rfInstance.current.fitView({ padding: isMobile ? 0.3 : 0.15, duration: 300 });
         toast.info("Diagram adjusted to fit screen", { duration: 1500 });
       }
     }, 80);
@@ -308,7 +320,7 @@ const Visualize = () => {
   const currentNodeTypes = viewMode === "schema" ? schemaNodeTypes : erNodeTypes;
 
   return (
-    <div className="h-screen flex flex-col bg-background">
+    <div className="h-screen flex flex-col bg-background visualize-root">
       {/* ═══ Toolbar ═══ */}
       <div className="border-b border-border dark:border-[rgba(148,163,184,0.15)] bg-card dark:bg-[#020617]">
 
@@ -508,7 +520,7 @@ const Visualize = () => {
       </div>
 
       <div className="flex-1 flex overflow-hidden">
-        <div className={`flex-1 relative ${legendHighlight ? `legend-highlight-${legendHighlight}` : ''}`}>
+        <div className={`flex-1 relative ${legendHighlight ? `legend-highlight-${legendHighlight}` : ''}`} style={{ touchAction: 'none' }}>
           <ReactFlow
             nodes={nodes}
             edges={edges}

@@ -257,6 +257,18 @@ All colors MUST be HSL.
     width: 120px !important;
     height: 80px !important;
   }
+
+  /* Prevent browser gestures on the canvas — isolate pinch-zoom to React Flow */
+  .react-flow {
+    touch-action: none;
+  }
+
+  /* Use dynamic viewport height to account for mobile address bar */
+  .visualize-root {
+    height: 100dvh;
+    height: 100vh;
+    /* fallback for older browsers */
+  }
 }
 
 /* Subtle hover glow on nodes */
