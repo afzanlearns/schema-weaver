@@ -8,7 +8,7 @@ import {
   Code,
   GitBranch,
   FileDown,
-  LayoutGrid,
+  MousePointerClick,
   Eye,
   Sun,
   Moon,
@@ -17,6 +17,7 @@ import {
   BookOpen,
   ArrowRight,
   Terminal,
+  Sparkles,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
@@ -45,56 +46,56 @@ import { useTheme } from "next-themes";
 const FEATURES = [
   {
     icon: Database,
-    title: "SQL → ER Diagram",
-    desc: "Instantly visualize CREATE TABLE statements as interactive, draggable entity-relationship diagrams.",
-  },
-  {
-    icon: Eye,
-    title: "Full Schema Diagram Mode",
-    desc: "Switch to Chen notation with entities, attribute ovals, and relationship diamonds with cardinality labels.",
-  },
-  {
-    icon: Code,
-    title: "TypeScript Interfaces",
-    desc: "Auto-generate clean TypeScript interfaces with proper type mapping and nullable fields from your schema.",
-  },
-  {
-    icon: FileDown,
-    title: "Markdown Documentation",
-    desc: "Export complete schema documentation as Markdown — ready for your repo wiki or README.",
+    title: "SQL → ER & Schema Diagrams",
+    desc: "Instantly transform raw CREATE TABLE statements into both conceptual ER diagrams and structured schema views for complete structural understanding.",
   },
   {
     icon: GitBranch,
-    title: "Interactive Relationships",
-    desc: "Hover over foreign keys to highlight relationship paths across your entire schema graph.",
+    title: "Interactive Relationship Exploration",
+    desc: "Hover over any node to visually trace its direct relationships across the graph, making dependencies and data flow immediately clear.",
   },
   {
-    icon: LayoutGrid,
-    title: "Layout Modes",
-    desc: "Choose between cluster, compact, and spacious layout modes to best fit your schema complexity.",
+    icon: MousePointerClick,
+    title: "Inspect & Edit Mode",
+    desc: "Select nodes to view detailed properties, constraints, and connections, and freely reposition them to explore schema structure interactively.",
+  },
+  {
+    icon: Sparkles,
+    title: "Intelligent Layout Modes",
+    desc: "Automatically adapt diagram organization using cluster, compact, and spacious modes to keep even complex schemas readable.",
+  },
+  {
+    icon: Code,
+    title: "Type-Safe Interface Generation",
+    desc: "Generate clean TypeScript interfaces directly from your schema with accurate type mapping and nullability awareness.",
+  },
+  {
+    icon: FileDown,
+    title: "Instant Documentation Export",
+    desc: "Export complete schema documentation as structured Markdown, ready for READMEs, onboarding guides, and internal docs.",
   },
 ];
 
 const FAQS = [
   {
     q: "Does the app execute SQL queries?",
-    a: "No. Schema Weaver only parses your SQL text client-side to extract structure. It never connects to a database or executes any statements.",
+    a: "No. Schema Weaver only parses SQL definitions to extract structural information. It never executes queries or connects to your database.",
   },
   {
-    q: "What SQL dialects are supported?",
-    a: "PostgreSQL and MySQL CREATE TABLE syntax, including inline and out-of-line foreign keys, composite primary keys, and common column constraints.",
+    q: "Is my schema processed client-side?",
+    a: "Yes. All parsing and diagram generation happen entirely in your browser. Your SQL is not sent to any server unless you explicitly save a diagram.",
   },
   {
-    q: "Is my schema stored or processed client-side?",
-    a: "All data stays in your browser. Schema Weaver uses localStorage for saved diagrams and sessionStorage for the active session. Nothing is sent to any server.",
+    q: "Can I edit diagrams after generation?",
+    a: "Yes. In Inspect mode, you can drag and reposition nodes, explore properties, and interactively adjust the layout while preserving relationships.",
   },
   {
-    q: "Can diagrams be edited after generation?",
-    a: "Yes. You can drag and reposition nodes, toggle auto-layout algorithms, and save your custom arrangement to your browser for later.",
+    q: "What is the difference between ER and Schema diagram modes?",
+    a: "ER mode presents a conceptual view with entities, attributes, and relationships, while Schema mode shows a structured table-centric view with columns, keys, and constraints.",
   },
   {
-    q: "How are TypeScript types derived?",
-    a: "SQL types are mapped to TypeScript equivalents: INT → number, VARCHAR → string, BOOLEAN → boolean, JSON → Record<string, unknown>, TIMESTAMP → string. Nullable columns become optional fields.",
+    q: "How are TypeScript interfaces generated?",
+    a: "TypeScript types are derived by mapping SQL column definitions to their closest TypeScript equivalents, including handling nullability and defaults.",
   },
 ];
 
@@ -321,8 +322,8 @@ const Index = () => {
               {/* Drop zone */}
               <div
                 className={`rounded-lg border-2 border-dashed p-6 text-center transition-colors cursor-pointer ${isDragging
-                    ? "border-primary bg-primary/5"
-                    : "border-border hover:border-primary/50"
+                  ? "border-primary bg-primary/5"
+                  : "border-border hover:border-primary/50"
                   }`}
                 onDragOver={(e) => {
                   e.preventDefault();
@@ -411,11 +412,11 @@ const Index = () => {
         <div className="mx-auto max-w-5xl px-4 sm:px-6">
           <div className="text-center mb-12">
             <h2 className="text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
-              Built for developers
+              Built for developers who need to understand schemas instantly
             </h2>
-            <p className="mt-2 text-sm text-muted-foreground max-w-md mx-auto">
-              Everything you need to understand, communicate, and document
-              database schemas — fast.
+            <p className="mt-2 text-sm text-muted-foreground max-w-lg mx-auto">
+              From visualization and interactive exploration to type generation
+              and documentation — everything in one tool.
             </p>
           </div>
 
