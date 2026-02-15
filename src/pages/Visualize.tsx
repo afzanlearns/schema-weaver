@@ -349,9 +349,11 @@ const Visualize = () => {
             </Panel>
           </ReactFlow>
         </div>
-        {selectedTable && viewMode === "schema" && (
+        {selectedTable && viewMode === "schema" && result && (
           <TableDetailPanel
             table={selectedTable}
+            allTables={result.tables}
+            relationships={result.relationships}
             onClose={() => setSelectedTable(null)}
           />
         )}
