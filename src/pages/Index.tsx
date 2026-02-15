@@ -443,29 +443,6 @@ const Index = () => {
         </div>
       </section>
 
-      {/* ═══════════════════ ABOUT ═══════════════════ */}
-      <section id="about" className="border-t border-border/60 py-20">
-        <div className="mx-auto max-w-2xl px-4 sm:px-6 text-center">
-          <h2 className="text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
-            Why Schema Weaver?
-          </h2>
-          <p className="mt-5 text-[15px] leading-relaxed text-muted-foreground">
-            Understanding database schemas from raw SQL is tedious and
-            error-prone — especially on legacy codebases with dozens of tables.
-            Schema Weaver instantly converts{" "}
-            <code className="font-mono text-xs bg-muted/30 px-1.5 py-0.5 rounded">
-              CREATE TABLE
-            </code>{" "}
-            statements into clear, interactive structural diagrams, type-safe
-            TypeScript interfaces, and portable documentation.
-          </p>
-          <p className="mt-4 text-[15px] leading-relaxed text-muted-foreground">
-            Built for developer productivity — whether you're onboarding onto a
-            new project, reviewing a migration, or documenting your schema for
-            your team. Everything runs entirely client-side with zero setup.
-          </p>
-        </div>
-      </section>
 
       {/* ═══════════════════ DEMO TEASER ═══════════════════ */}
       <section className="border-t border-border/60 py-20 bg-card/30">
@@ -593,6 +570,30 @@ const Index = () => {
               Loads this example into the interactive schema canvas.
             </p>
           </div>
+        </div>
+      </section>
+
+      {/* ═══════════════════ ABOUT ═══════════════════ */}
+      <section id="about" className="border-t border-border/60 py-20">
+        <div className="mx-auto max-w-2xl px-4 sm:px-6 text-center">
+          <h2 className="text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
+            Why Schema Weaver?
+          </h2>
+          <p className="mt-5 text-[15px] leading-relaxed text-muted-foreground">
+            Understanding database schemas from raw SQL is tedious and
+            error-prone — especially on legacy codebases with dozens of tables.
+            Schema Weaver instantly converts{" "}
+            <code className="font-mono text-xs bg-muted/30 px-1.5 py-0.5 rounded">
+              CREATE TABLE
+            </code>{" "}
+            statements into clear, interactive structural diagrams, type-safe
+            TypeScript interfaces, and portable documentation.
+          </p>
+          <p className="mt-4 text-[15px] leading-relaxed text-muted-foreground">
+            Built for developer productivity — whether you're onboarding onto a
+            new project, reviewing a migration, or documenting your schema for
+            your team. Everything runs entirely client-side with zero setup.
+          </p>
         </div>
       </section>
 
