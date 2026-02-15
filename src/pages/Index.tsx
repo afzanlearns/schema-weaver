@@ -46,33 +46,33 @@ import { useTheme } from "next-themes";
 const FEATURES = [
   {
     icon: Database,
-    title: "SQL → ER & Schema Diagrams",
-    desc: <>Instantly transform raw CREATE TABLE statements into both <em>conceptual ER diagrams</em> and structured schema views for complete structural understanding.</>,
+    title: "Schema Diagrams",
+    desc: <>Transform CREATE TABLE statements into both <em>ER diagrams</em> and structured schema views for complete structural understanding.</>,
   },
   {
     icon: GitBranch,
-    title: "Interactive Relationship Exploration",
-    desc: <>Hover over any node to visually trace its <em>direct relationships</em> across the graph, making dependencies and data flow immediately clear.</>,
+    title: "Relationship Tracing",
+    desc: <>Hover any node to visually trace its <em>direct relationships</em> across the graph. Dependencies and data flow become immediately clear.</>,
   },
   {
     icon: MousePointerClick,
-    title: "Inspect & Edit Mode",
-    desc: <>Select nodes to view detailed properties, constraints, and connections, and freely reposition them to <em>explore schema structure</em> interactively.</>,
+    title: "Inspect & Edit",
+    desc: <>Select nodes to view properties, constraints, and connections. Freely reposition them to <em>explore schema structure</em> interactively.</>,
   },
   {
     icon: Sparkles,
-    title: "Intelligent Layout Modes",
-    desc: <>Automatically adapt diagram organization using <em>cluster, compact, and spacious</em> modes to keep even complex schemas readable.</>,
+    title: "Adaptive Layouts",
+    desc: <>Automatically organize diagrams using <em>cluster, compact, and spacious</em> modes to keep even complex schemas readable.</>,
   },
   {
     icon: Code,
-    title: "Type-Safe Interface Generation",
+    title: "TypeScript Generation",
     desc: <>Generate clean <em>TypeScript interfaces</em> directly from your schema with accurate type mapping and nullability awareness.</>,
   },
   {
     icon: FileDown,
-    title: "Instant Documentation Export",
-    desc: <>Export complete <em>schema documentation</em> as structured Markdown, ready for READMEs, onboarding guides, and internal docs.</>,
+    title: "Markdown Export",
+    desc: <>Export complete <em>schema documentation</em> as structured Markdown — ready for READMEs, onboarding guides, and internal docs.</>,
   },
 ];
 
@@ -304,13 +304,13 @@ const Index = () => {
           </div>
 
           {/* Heading */}
-          <h1 className="text-center text-4xl font-extrabold tracking-tight text-foreground sm:text-5xl lg:text-[3.25rem] leading-[1.15]">
+          <h1 className="text-center text-4xl font-extrabold tracking-tight text-foreground sm:text-5xl lg:text-[3.5rem] leading-[1.08]">
             Transform SQL into
             <br className="hidden sm:block" />{" "}
-            <span className="text-primary">Interactive Database Diagrams</span>
+            <span className="text-primary"><em>Interactive Database Diagrams</em></span>
           </h1>
 
-          <p className="mx-auto mt-5 max-w-xl text-center text-[15px] leading-relaxed text-muted-foreground sm:text-base">
+          <p className="mx-auto mt-6 max-w-lg text-center text-[15px] leading-[1.7] text-muted-foreground sm:text-base">
             Paste or upload your SQL to instantly generate <em>interactive ER
               diagrams</em>, <em>TypeScript interfaces</em>, and Markdown documentation — all in
             your browser.
@@ -408,32 +408,33 @@ const Index = () => {
       </section>
 
       {/* ═══════════════════ FEATURES ═══════════════════ */}
-      <section id="features" className="border-t border-border/60 py-20">
+      <section id="features" className="border-t border-border/60 py-24">
         <div className="mx-auto max-w-5xl px-4 sm:px-6">
-          <div className="text-center mb-12">
-            <h2 className="text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
-              Built for developers who need to understand schemas instantly
+          <div className="text-center mb-14">
+            <h2 className="text-2xl font-bold tracking-tight text-foreground sm:text-3xl max-w-md mx-auto leading-snug">
+              Built for developers who need to{" "}
+              <em className="not-italic text-primary">understand schemas instantly</em>
             </h2>
-            <p className="mt-2 text-sm text-muted-foreground max-w-lg mx-auto">
+            <p className="mt-3 text-sm leading-relaxed text-muted-foreground max-w-md mx-auto">
               From visualization and interactive exploration to type generation
               and documentation — everything in one tool.
             </p>
           </div>
 
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
             {FEATURES.map((f) => (
               <Card
                 key={f.title}
                 className="group border-border/60 bg-card/50 hover:bg-card transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md"
               >
-                <CardContent className="p-5">
+                <CardContent className="p-6">
                   <div className="mb-3 flex h-9 w-9 items-center justify-center rounded-lg bg-primary/10 text-primary">
                     <f.icon className="h-[18px] w-[18px]" />
                   </div>
-                  <h3 className="text-sm font-semibold text-foreground">
+                  <h3 className="text-[15px] font-semibold text-foreground tracking-tight">
                     {f.title}
                   </h3>
-                  <p className="mt-1.5 text-[13px] leading-relaxed text-muted-foreground">
+                  <p className="mt-2 text-[13px] leading-[1.65] text-muted-foreground">
                     {f.desc}
                   </p>
                 </CardContent>
@@ -445,14 +446,14 @@ const Index = () => {
 
 
       {/* ═══════════════════ DEMO TEASER ═══════════════════ */}
-      <section className="border-t border-border/60 py-20 bg-card/30">
+      <section className="border-t border-border/60 py-24 bg-card/30">
         <div className="mx-auto max-w-3xl px-4 sm:px-6">
-          <div className="text-center mb-10">
+          <div className="text-center mb-12">
             <h2 className="text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
               See it in action
             </h2>
-            <p className="mt-2 text-sm text-muted-foreground">
-              Paste SQL, get a diagram — it's that simple.
+            <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
+              Paste SQL, <em>get a diagram</em> — it's that simple.
             </p>
           </div>
 
@@ -574,22 +575,22 @@ const Index = () => {
       </section>
 
       {/* ═══════════════════ ABOUT ═══════════════════ */}
-      <section id="about" className="border-t border-border/60 py-20">
-        <div className="mx-auto max-w-2xl px-4 sm:px-6 text-center">
+      <section id="about" className="border-t border-border/60 py-24">
+        <div className="mx-auto max-w-xl px-4 sm:px-6 text-center">
           <h2 className="text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
             Why Schema Weaver?
           </h2>
-          <p className="mt-5 text-[15px] leading-relaxed text-muted-foreground">
+          <p className="mt-6 text-[15px] leading-[1.75] text-muted-foreground">
             Understanding database schemas from raw SQL is tedious and
             error-prone — especially on legacy codebases with dozens of tables.
             Schema Weaver instantly converts{" "}
             <code className="font-mono text-xs bg-muted/30 px-1.5 py-0.5 rounded">
               CREATE TABLE
             </code>{" "}
-            statements into clear, <em>interactive structural diagrams</em>, type-safe
-            TypeScript interfaces, and portable documentation.
+            statements into clear, <em>interactive structural diagrams</em>,{" "}
+            <em>type-safe TypeScript interfaces</em>, and portable documentation.
           </p>
-          <p className="mt-4 text-[15px] leading-relaxed text-muted-foreground">
+          <p className="mt-4 text-[15px] leading-[1.75] text-muted-foreground">
             Built for developer productivity — whether you're onboarding onto a
             new project, reviewing a migration, or <em>documenting your schema</em> for
             your team. Everything runs entirely client-side with zero setup.
@@ -598,18 +599,18 @@ const Index = () => {
       </section>
 
       {/* ═══════════════════ FAQ ═══════════════════ */}
-      <section id="faq" className="border-t border-border/60 py-20">
+      <section id="faq" className="border-t border-border/60 py-24">
         <div className="mx-auto max-w-2xl px-4 sm:px-6">
-          <h2 className="text-center text-2xl font-bold tracking-tight text-foreground sm:text-3xl mb-10">
+          <h2 className="text-center text-[1.75rem] font-bold tracking-tight text-foreground sm:text-3xl mb-12">
             Frequently asked questions
           </h2>
           <Accordion type="single" collapsible className="w-full">
             {FAQS.map((faq, i) => (
               <AccordionItem key={i} value={`faq-${i}`}>
-                <AccordionTrigger className="text-left text-sm font-medium text-foreground hover:no-underline">
+                <AccordionTrigger className="text-left text-[14px] font-medium text-foreground hover:no-underline">
                   {faq.q}
                 </AccordionTrigger>
-                <AccordionContent className="text-[13px] leading-relaxed text-muted-foreground">
+                <AccordionContent className="text-[13px] leading-[1.7] text-muted-foreground">
                   {faq.a}
                 </AccordionContent>
               </AccordionItem>

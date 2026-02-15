@@ -47,14 +47,33 @@ import {
   Table as TableIcon,
   Maximize2,
   Minimize2,
+  Sun,
+  Moon,
 } from "lucide-react";
 import { toast } from "sonner";
+import { useTheme } from "next-themes";
 
 const schemaNodeTypes = { tableNode: TableNode };
 const erNodeTypes = {
   erEntity: EREntityNode,
   erAttribute: ERAttributeNode,
   erRelationship: ERRelationshipNode,
+};
+
+const ThemeToggle = () => {
+  const { theme, setTheme } = useTheme();
+  return (
+    <Button
+      variant="ghost"
+      size="icon"
+      onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+      aria-label="Toggle theme"
+      className="h-8 w-8"
+    >
+      <Sun className="h-4 w-4 hidden dark:block" />
+      <Moon className="h-4 w-4 block dark:hidden" />
+    </Button>
+  );
 };
 
 const Visualize = () => {
@@ -271,7 +290,7 @@ const Visualize = () => {
         {/* Interaction Mode Toggle */}
         <div className="flex border border-border rounded overflow-hidden">
           <button
-            className={`px-3 py-1 text-xs font-medium flex items-center gap-1 transition-colors ${interactionMode === "inspect" ? "bg-secondary text-secondary-foreground" : "bg-card text-foreground hover:bg-accent"
+            className={`px-3 py-1 text-xs font-medium flex items-center gap-1 transition-colors ${interactionMode === "inspect" ? "bg-secondary text-secondary-foreground" : "bg-card text-foreground hover:bg-muted/30"
               }`}
             onClick={() => setInteractionMode("inspect")}
             title="Inspect Mode: Drag nodes, click to view details"
@@ -279,7 +298,7 @@ const Visualize = () => {
             <Maximize2 className="h-3.5 w-3.5" /> Inspect
           </button>
           <button
-            className={`px-3 py-1 text-xs font-medium flex items-center gap-1 transition-colors ${interactionMode === "relations" ? "bg-secondary text-secondary-foreground" : "bg-card text-foreground hover:bg-accent"
+            className={`px-3 py-1 text-xs font-medium flex items-center gap-1 transition-colors ${interactionMode === "relations" ? "bg-secondary text-secondary-foreground" : "bg-card text-foreground hover:bg-muted/30"
               }`}
             onClick={() => setInteractionMode("relations")}
             title="Relations Mode: Hover to trace connections, fixed layout"
@@ -327,6 +346,8 @@ const Visualize = () => {
         <div className="flex-1" />
 
         <div className="flex items-center gap-1">
+          <ThemeToggle />
+          <div className="h-4 w-px bg-border mx-0.5" />
           <Button variant="ghost" size="icon" onClick={handleExportMarkdown} title="Export Markdown">
             <FileText className="h-4 w-4" />
           </Button>

@@ -13,9 +13,8 @@ const TableNode = memo(({ data, selected }: NodeProps) => {
   const nodeData = data as unknown as TableNodeData;
   return (
     <div
-      className={`bg-card border rounded-lg shadow-sm min-w-[220px] overflow-hidden ${
-        selected ? "border-primary ring-2 ring-primary/30" : "border-border"
-      }`}
+      className={`bg-card border rounded-lg shadow-sm min-w-[220px] overflow-hidden ${selected ? "border-primary ring-2 ring-primary/30" : "border-border"
+        }`}
     >
       <div className="bg-primary text-primary-foreground px-3 py-2 font-semibold text-sm">
         {nodeData.label}
@@ -24,7 +23,7 @@ const TableNode = memo(({ data, selected }: NodeProps) => {
         {nodeData.columns.map((col: Column, i: number) => (
           <div
             key={col.name}
-            className="flex items-center gap-2 px-2 py-1 text-xs hover:bg-accent/50 rounded"
+            className="flex items-center gap-2 px-2 py-1 text-xs hover:bg-muted/20 rounded"
           >
             <span className="text-foreground font-medium flex-1 truncate">{col.name}</span>
             <span className="text-muted-foreground truncate max-w-[80px]">{col.type}</span>

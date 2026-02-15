@@ -191,8 +191,8 @@ export class LayoutEngine {
                     style: {
                         width: elkNode.width,
                         height: elkNode.height,
-                        backgroundColor: "rgba(240, 240, 240, 0.2)",
-                        border: "1px dashed #ccc",
+                        backgroundColor: "hsl(var(--card) / 0.3)",
+                        border: "1px dashed hsl(var(--border))",
                         borderRadius: "8px",
                     },
                     // width/height in style or directly on node depending on RF version/usage
@@ -237,7 +237,10 @@ export class LayoutEngine {
             label: `${r.fromColumn} → ${r.toColumn}`,
             type: "smoothstep",
             style: { stroke: "hsl(var(--muted-foreground))" },
-            labelStyle: { fontSize: 10, fill: "hsl(var(--muted-foreground))" },
+            labelStyle: { fontSize: 10, fill: "hsl(var(--foreground))" },
+            labelBgStyle: { fill: "hsl(var(--card))", fillOpacity: 0.9 },
+            labelBgPadding: [6, 4] as [number, number],
+            labelBgBorderRadius: 4,
             animated: false,
         }));
 

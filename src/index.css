@@ -179,3 +179,31 @@ All colors MUST be HSL.
       0 0 15px -5px hsl(var(--primary) / 0.15);
   }
 }
+
+/* ── React Flow dark-mode overrides ── */
+.dark .react-flow__controls {
+  background: hsl(var(--card));
+  border: 1px solid hsl(var(--border));
+  border-radius: 0.5rem;
+  box-shadow: 0 2px 8px hsl(0 0% 0% / 0.3);
+}
+
+.dark .react-flow__controls button {
+  background: transparent;
+  border-bottom: 1px solid hsl(var(--border));
+  color: hsl(var(--foreground));
+  fill: hsl(var(--foreground));
+}
+
+.dark .react-flow__controls button:hover {
+  background: hsl(var(--muted) / 0.2);
+}
+
+.dark .react-flow__controls button svg {
+  fill: hsl(var(--foreground));
+}
+
+.dark .react-flow__handle {
+  background: hsl(var(--primary));
+  border-color: hsl(var(--border));
+}

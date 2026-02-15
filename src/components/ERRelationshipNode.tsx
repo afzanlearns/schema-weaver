@@ -10,7 +10,7 @@ const ERRelationshipNode = ({ data }: NodeProps) => {
   return (
     <div className="relative flex items-center justify-center" style={{ width: 100, height: 100 }}>
       <div
-        className="absolute inset-0 bg-accent border-2 border-primary"
+        className="absolute inset-0 bg-card border-2 border-primary/70 shadow-md"
         style={{ transform: "rotate(45deg)", width: "70px", height: "70px", margin: "auto", top: 0, bottom: 0, left: 0, right: 0 }}
       />
       <span className="relative z-10 text-xs font-semibold text-foreground text-center leading-tight max-w-[60px]">
