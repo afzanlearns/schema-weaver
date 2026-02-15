@@ -52,7 +52,16 @@ import {
   Minimize2,
   Sun,
   Moon,
+  MoreHorizontal,
 } from "lucide-react";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { toast } from "sonner";
 import { useTheme } from "next-themes";
 import { ERLegend, type LegendType } from "@/components/ERLegend";
@@ -81,6 +90,7 @@ const ThemeToggle = () => {
 };
 
 const Visualize = () => {
+  const { setTheme, theme } = useTheme();
   const navigate = useNavigate();
   const [result, setResult] = useState<ParseResult | null>(null);
   const [selectedTable, setSelectedTable] = useState<Table | null>(null);
@@ -431,38 +441,57 @@ const Visualize = () => {
               <ArrowLeft className="h-4 w-4" />
             </Button>
             <div className="h-4 w-px bg-border mx-0.5" />
-            <div className="flex border border-border rounded overflow-hidden">
+
+            {/* Toggle Group - shrink-0 to ensure visibility */}
+            <div className="grid grid-cols-2 border border-border rounded overflow-hidden shrink-0">
               <button
-                className={`px-2 py-1 text-xs font-medium flex items-center gap-1 transition-colors ${viewMode === "schema" ? "bg-primary text-primary-foreground" : "bg-card text-foreground hover:bg-muted/30"}`}
+                className={`px-2 py-1 text-xs font-medium flex items-center justify-center gap-1 transition-colors ${viewMode === "schema" ? "bg-primary text-primary-foreground" : "bg-card text-foreground hover:bg-muted/30"}`}
                 onClick={() => setViewMode("schema")}
               >
                 <TableIcon className="h-3.5 w-3.5" /> Schema
               </button>
               <button
-                className={`px-2 py-1 text-xs font-medium flex items-center gap-1 transition-colors ${viewMode === "er" ? "bg-primary text-primary-foreground" : "bg-card text-foreground hover:bg-muted/30"}`}
+                className={`px-2 py-1 text-xs font-medium flex items-center justify-center gap-1 transition-colors ${viewMode === "er" ? "bg-primary text-primary-foreground" : "bg-card text-foreground hover:bg-muted/30"}`}
                 onClick={() => setViewMode("er")}
               >
-                <Eye className="h-3.5 w-3.5" /> ER
+                <Eye className="h-3.5 w-3.5" /> ER Diagram
               </button>
             </div>
+
             <div className="flex-1" />
+
             <div className="flex items-center gap-0.5">
-              <ThemeToggle />
-              <Button variant="ghost" size="icon" className="h-8 w-8" onClick={handleExportMarkdown} title="Export Markdown">
-                <FileText className="h-4 w-4" />
-              </Button>
-              <Button variant="ghost" size="icon" className="h-8 w-8" onClick={handleExportJSON} title="Export JSON">
-                <FileJson className="h-4 w-4" />
-              </Button>
-              <Button variant="ghost" size="icon" className="h-8 w-8" onClick={handleGenerateAllTS} title="Copy TypeScript">
-                <Code className="h-4 w-4" />
-              </Button>
               <Button variant="ghost" size="icon" className="h-8 w-8" onClick={handleSave} title="Save Diagram">
                 <Save className="h-4 w-4" />
               </Button>
               <Button variant="ghost" size="icon" className="h-8 w-8" onClick={handleSnapshot} title="Snapshot">
                 <Camera className="h-4 w-4" />
               </Button>
+
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" size="icon" className="h-8 w-8">
+                    <MoreHorizontal className="h-4 w-4" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end">
+                  <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                  <DropdownMenuItem onClick={() => setTheme(theme === "dark" ? "light" : "dark")}>
+                    {theme === "dark" ? <Sun className="h-4 w-4 mr-2" /> : <Moon className="h-4 w-4 mr-2" />}
+                    Toggle Theme
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem onClick={handleExportMarkdown}>
+                    <FileText className="h-4 w-4 mr-2" /> Export Markdown
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={handleExportJSON}>
+                    <FileJson className="h-4 w-4 mr-2" /> Export JSON
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={handleGenerateAllTS}>
+                    <Code className="h-4 w-4 mr-2" /> Copy TypeScript
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
             </div>
           </div>
 
