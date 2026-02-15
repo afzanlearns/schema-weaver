@@ -470,7 +470,7 @@ const Index = () => {
       {/* ═══════════════════ DEMO TEASER ═══════════════════ */}
       <section className="border-t border-border/60 py-20 bg-card/30">
         <div className="mx-auto max-w-3xl px-4 sm:px-6">
-          <div className="text-center mb-8">
+          <div className="text-center mb-10">
             <h2 className="text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
               See it in action
             </h2>
@@ -504,94 +504,94 @@ const Index = () => {
                 </pre>
               </div>
 
-              {/* Output side */}
-              <div className="p-5">
-                <p className="text-[11px] font-mono uppercase tracking-wider text-muted-foreground mb-3">
-                  Generated Output
+              {/* Diagram canvas preview */}
+              <div className="relative p-5 overflow-hidden">
+                <p className="text-[11px] font-mono uppercase tracking-wider text-muted-foreground mb-4">
+                  Diagram Canvas
                 </p>
-                <div className="space-y-3">
-                  {/* users table */}
-                  <div className="rounded-lg border border-border bg-background/50 p-3">
-                    <div className="flex items-center gap-2 mb-2">
-                      <Database className="h-3.5 w-3.5 text-primary" />
-                      <span className="font-mono text-xs font-semibold text-foreground">
-                        users
-                      </span>
+
+                {/* Dotted grid canvas background */}
+                <div className="absolute inset-0 bg-[radial-gradient(circle,hsl(var(--border)/0.4)_1px,transparent_1px)] bg-[size:16px_16px]" />
+
+                {/* Diagram nodes container */}
+                <div className="relative space-y-3">
+                  {/* users table — mirrors real TableNode */}
+                  <div className="group rounded-lg border border-border bg-card shadow-sm min-w-[200px] overflow-hidden transition-all duration-200 hover:border-primary hover:ring-2 hover:ring-primary/30 hover:shadow-md cursor-default">
+                    <div className="bg-primary text-primary-foreground px-3 py-1.5 text-xs font-semibold">
+                      users
                     </div>
-                    <div className="space-y-1 font-mono text-[11px] text-muted-foreground">
-                      <div className="flex gap-2">
-                        <span className="text-primary">PK</span>
-                        <span>id</span>
-                        <span className="ml-auto text-foreground/40">SERIAL</span>
+                    <div className="px-1 py-1">
+                      <div className="flex items-center gap-2 px-2 py-1 text-xs rounded hover:bg-accent/50 transition-colors">
+                        <span className="text-foreground font-medium flex-1">id</span>
+                        <span className="text-muted-foreground text-[11px]">SERIAL</span>
+                        <span className="text-[10px] px-1 py-0 h-4 inline-flex items-center rounded bg-chart-5 text-primary-foreground font-medium">PK</span>
                       </div>
-                      <div className="flex gap-2">
-                        <span className="text-transparent">PK</span>
-                        <span>name</span>
-                        <span className="ml-auto text-foreground/40">VARCHAR(100)</span>
+                      <div className="flex items-center gap-2 px-2 py-1 text-xs rounded hover:bg-accent/50 transition-colors">
+                        <span className="text-foreground font-medium flex-1">name</span>
+                        <span className="text-muted-foreground text-[11px]">VARCHAR(100)</span>
                       </div>
-                      <div className="flex gap-2">
-                        <span className="text-transparent">PK</span>
-                        <span>email</span>
-                        <span className="ml-auto text-foreground/40">VARCHAR(255)</span>
+                      <div className="flex items-center gap-2 px-2 py-1 text-xs rounded hover:bg-accent/50 transition-colors">
+                        <span className="text-foreground font-medium flex-1">email</span>
+                        <span className="text-muted-foreground text-[11px]">VARCHAR(255)</span>
                       </div>
                     </div>
                   </div>
 
-                  {/* orders table */}
-                  <div className="rounded-lg border border-border bg-background/50 p-3">
-                    <div className="flex items-center gap-2 mb-2">
-                      <Database className="h-3.5 w-3.5 text-primary" />
-                      <span className="font-mono text-xs font-semibold text-foreground">
-                        orders
-                      </span>
-                    </div>
-                    <div className="space-y-1 font-mono text-[11px] text-muted-foreground">
-                      <div className="flex gap-2">
-                        <span className="text-primary">PK</span>
-                        <span>id</span>
-                        <span className="ml-auto text-foreground/40">SERIAL</span>
-                      </div>
-                      <div className="flex gap-2">
-                        <span className="text-yellow-500">FK</span>
-                        <span>user_id</span>
-                        <span className="ml-auto text-foreground/40">→ users.id</span>
-                      </div>
-                      <div className="flex gap-2">
-                        <span className="text-transparent">PK</span>
-                        <span>total</span>
-                        <span className="ml-auto text-foreground/40">DECIMAL(10,2)</span>
-                      </div>
-                      <div className="flex gap-2">
-                        <span className="text-transparent">PK</span>
-                        <span>status</span>
-                        <span className="ml-auto text-foreground/40">VARCHAR(20)</span>
-                      </div>
-                    </div>
+                  {/* Relation connector */}
+                  <div className="relative flex items-center justify-center py-1">
+                    <div className="flex-1 border-t border-dashed border-primary/40" />
+                    <span className="mx-3 text-[10px] font-mono font-medium text-primary bg-card px-2 py-0.5 rounded-full border border-primary/30">
+                      1 : N
+                    </span>
+                    <div className="flex-1 border-t border-dashed border-primary/40" />
                   </div>
 
-                  {/* Relationship */}
-                  <div className="flex items-center gap-2 text-[11px] font-mono text-muted-foreground">
-                    <GitBranch className="h-3 w-3 text-primary" />
-                    <span>orders.user_id → users.id</span>
-                    <span className="ml-auto text-foreground/40">1:N</span>
+                  {/* orders table — mirrors real TableNode */}
+                  <div className="group rounded-lg border border-border bg-card shadow-sm min-w-[200px] overflow-hidden transition-all duration-200 hover:border-primary hover:ring-2 hover:ring-primary/30 hover:shadow-md cursor-default">
+                    <div className="bg-primary text-primary-foreground px-3 py-1.5 text-xs font-semibold">
+                      orders
+                    </div>
+                    <div className="px-1 py-1">
+                      <div className="flex items-center gap-2 px-2 py-1 text-xs rounded hover:bg-accent/50 transition-colors">
+                        <span className="text-foreground font-medium flex-1">id</span>
+                        <span className="text-muted-foreground text-[11px]">SERIAL</span>
+                        <span className="text-[10px] px-1 py-0 h-4 inline-flex items-center rounded bg-chart-5 text-primary-foreground font-medium">PK</span>
+                      </div>
+                      <div className="flex items-center gap-2 px-2 py-1 text-xs rounded hover:bg-accent/50 transition-colors group/fk">
+                        <span className="text-foreground font-medium flex-1">user_id</span>
+                        <span className="text-muted-foreground text-[11px] group-hover/fk:text-primary transition-colors">→ users.id</span>
+                        <span className="text-[10px] px-1 py-0 h-4 inline-flex items-center rounded bg-secondary text-secondary-foreground font-medium">FK</span>
+                      </div>
+                      <div className="flex items-center gap-2 px-2 py-1 text-xs rounded hover:bg-accent/50 transition-colors">
+                        <span className="text-foreground font-medium flex-1">total</span>
+                        <span className="text-muted-foreground text-[11px]">DECIMAL(10,2)</span>
+                      </div>
+                      <div className="flex items-center gap-2 px-2 py-1 text-xs rounded hover:bg-accent/50 transition-colors">
+                        <span className="text-foreground font-medium flex-1">status</span>
+                        <span className="text-muted-foreground text-[11px]">VARCHAR(20)</span>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
           </div>
 
-          <div className="mt-6 text-center">
+          {/* CTA */}
+          <div className="mt-8 flex flex-col items-center gap-2">
             <Button
-              variant="outline"
               onClick={() => {
-                setSqlText(DEMO_SQL);
-                window.scrollTo({ top: 0, behavior: "smooth" });
-                toast.success("Sample SQL loaded — scroll up to visualize");
+                sessionStorage.setItem("schemamap-sql", DEMO_SQL);
+                navigate("/visualize");
               }}
             >
-              <Zap className="mr-2 h-4 w-4" />
-              Try this example
+              <Eye className="mr-2 h-4 w-4" />
+              Explore Full Diagram
+              <ArrowRight className="ml-2 h-4 w-4" />
             </Button>
+            <p className="text-xs text-muted-foreground">
+              Loads this example into the interactive schema canvas.
+            </p>
           </div>
         </div>
       </section>
