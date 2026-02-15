@@ -519,8 +519,8 @@ const Visualize = () => {
         </div>
       </div>
 
-      <div className="flex-1 flex overflow-hidden">
-        <div className={`flex-1 relative ${legendHighlight ? `legend-highlight-${legendHighlight}` : ''}`} style={{ touchAction: 'none' }}>
+      <div className="flex-1 flex overflow-hidden min-h-0">
+        <div className={`flex-1 relative min-h-0 ${legendHighlight ? `legend-highlight-${legendHighlight}` : ''}`} style={{ touchAction: 'none' }}>
           <ReactFlow
             nodes={nodes}
             edges={edges}
@@ -533,6 +533,8 @@ const Visualize = () => {
             onInit={(instance) => { rfInstance.current = instance; }}
             minZoom={0.1}
             maxZoom={2}
+            fitView
+            fitViewOptions={{ padding: isMobile ? 0.3 : 0.15 }}
             proOptions={{ hideAttribution: true }}
           >
             <Background />

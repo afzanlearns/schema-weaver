@@ -265,9 +265,11 @@ All colors MUST be HSL.
 
   /* Use dynamic viewport height to account for mobile address bar */
   .visualize-root {
-    height: 100dvh;
     height: 100vh;
-    /* fallback for older browsers */
+    /* fallback */
+    height: 100dvh;
+    /* modern: accounts for dynamic address bar */
+    overflow: hidden;
   }
 }
 
