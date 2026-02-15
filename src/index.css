@@ -207,3 +207,33 @@ All colors MUST be HSL.
   background: hsl(var(--primary));
   border-color: hsl(var(--border));
 }
+
+/* ── React Flow interaction & transition refinements ── */
+
+/* Smooth node movement on layout changes */
+.react-flow__node {
+  transition: transform 0.3s ease-in-out;
+}
+
+/* Subtle hover glow on nodes */
+.react-flow__node:hover {
+  filter: drop-shadow(0 0 6px hsl(var(--primary) / 0.15));
+}
+
+/* Edge hover feedback */
+.react-flow__edge:hover .react-flow__edge-path {
+  stroke-width: 2 !important;
+  stroke: hsl(var(--primary)) !important;
+}
+
+/* Background grid contrast */
+.react-flow__background pattern circle {
+  fill: hsl(var(--muted-foreground) / 0.15);
+}
+
+/* MiniMap dark mode */
+.dark .react-flow__minimap {
+  background: hsl(var(--card));
+  border: 1px solid hsl(var(--border));
+  border-radius: 0.375rem;
+}

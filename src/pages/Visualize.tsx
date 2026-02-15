@@ -96,8 +96,11 @@ const Visualize = () => {
   const [focusedNodeId, setFocusedNodeId] = useState<string | null>(null);
 
   // Fit View State
-  const rfInstance = useRef<ReactFlowInstance | null>(null);
+  const rfInstance = useRef<ReactFlowInstance<any, any> | null>(null);
   const [layoutVersion, setLayoutVersion] = useState(0);
+
+  // Canvas hint dismissed
+  const [hintDismissed, setHintDismissed] = useState(false);
 
   const applyLayout = useCallback(async (parsed: ParseResult) => {
     if (viewMode === "er") {
@@ -270,14 +273,14 @@ const Visualize = () => {
         {/* View mode toggle */}
         <div className="flex border border-border rounded overflow-hidden">
           <button
-            className={`px-3 py-1 text-xs font-medium flex items-center gap-1 transition-colors ${viewMode === "schema" ? "bg-primary text-primary-foreground" : "bg-card text-foreground hover:bg-accent"
+            className={`px-3 py-1 text-xs font-medium flex items-center gap-1 transition-colors ${viewMode === "schema" ? "bg-primary text-primary-foreground" : "bg-card text-foreground hover:bg-muted/30"
               }`}
             onClick={() => setViewMode("schema")}
           >
             <TableIcon className="h-3.5 w-3.5" /> Schema
           </button>
           <button
-            className={`px-3 py-1 text-xs font-medium flex items-center gap-1 transition-colors ${viewMode === "er" ? "bg-primary text-primary-foreground" : "bg-card text-foreground hover:bg-accent"
+            className={`px-3 py-1 text-xs font-medium flex items-center gap-1 transition-colors ${viewMode === "er" ? "bg-primary text-primary-foreground" : "bg-card text-foreground hover:bg-muted/30"
               }`}
             onClick={() => setViewMode("er")}
           >
@@ -310,36 +313,38 @@ const Visualize = () => {
         {/* Layout Controls */}
         {viewMode === "schema" && (
           <>
-            <div className="h-4 w-px bg-border mx-1" />
-            <Select value={layoutDir} onValueChange={(v: "RIGHT" | "DOWN") => setLayoutDir(v)}>
-              <SelectTrigger className="h-8 w-[100px] text-xs">
-                <SelectValue placeholder="Direction" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="RIGHT">Horizontal</SelectItem>
-                <SelectItem value="DOWN">Vertical</SelectItem>
-              </SelectContent>
-            </Select>
+            <div className="h-4 w-px bg-border/50 mx-1" />
+            <div className="flex items-center gap-1.5">
+              <Select value={layoutDir} onValueChange={(v: "RIGHT" | "DOWN") => setLayoutDir(v)}>
+                <SelectTrigger className="h-7 w-[100px] text-xs">
+                  <SelectValue placeholder="Direction" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="RIGHT">Horizontal</SelectItem>
+                  <SelectItem value="DOWN">Vertical</SelectItem>
+                </SelectContent>
+              </Select>
 
-            <Select value={layoutSpacing} onValueChange={(v: any) => setLayoutSpacing(v)}>
-              <SelectTrigger className="h-8 w-[100px] text-xs">
-                <SelectValue placeholder="Spacing" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="compact">Compact</SelectItem>
-                <SelectItem value="balanced">Balanced</SelectItem>
-                <SelectItem value="spacious">Spacious</SelectItem>
-              </SelectContent>
-            </Select>
+              <Select value={layoutSpacing} onValueChange={(v: any) => setLayoutSpacing(v)}>
+                <SelectTrigger className="h-7 w-[100px] text-xs">
+                  <SelectValue placeholder="Spacing" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="compact">Compact</SelectItem>
+                  <SelectItem value="balanced">Balanced</SelectItem>
+                  <SelectItem value="spacious">Spacious</SelectItem>
+                </SelectContent>
+              </Select>
 
-            <div className="flex items-center space-x-2">
-              <Switch id="grouping" checked={enableGrouping} onCheckedChange={setEnableGrouping} />
-              <Label htmlFor="grouping" className="text-xs">Cluster</Label>
+              <div className="flex items-center space-x-1.5">
+                <Switch id="grouping" checked={enableGrouping} onCheckedChange={setEnableGrouping} />
+                <Label htmlFor="grouping" className="text-xs">Cluster</Label>
+              </div>
+
+              <Button variant="ghost" size="sm" className="h-7 w-7 p-0" onClick={() => result && applyLayout(result)} title="Re-calculate Layout">
+                <LayoutGrid className="h-3.5 w-3.5" />
+              </Button>
             </div>
-
-            <Button variant="outline" size="sm" onClick={() => result && applyLayout(result)} title="Re-calculate Layout">
-              <LayoutGrid className="h-4 w-4" />
-            </Button>
           </>
         )}
 
@@ -370,13 +375,14 @@ const Visualize = () => {
             edges={edges}
             onNodesChange={onNodesChange}
             onEdgesChange={onEdgesChange}
-            onNodeClick={onNodeClick}
-            onNodeMouseEnter={onNodeMouseEnter}
+            onNodeClick={(e, node) => { setHintDismissed(true); onNodeClick(e, node); }}
+            onNodeMouseEnter={(e, node) => { setHintDismissed(true); onNodeMouseEnter(e, node); }}
             onNodeMouseLeave={onNodeMouseLeave}
             nodeTypes={currentNodeTypes}
             onInit={(instance) => { rfInstance.current = instance; }}
             minZoom={0.1}
             maxZoom={2}
+            proOptions={{ hideAttribution: true }}
           >
             <Background />
             <Controls />
@@ -387,6 +393,14 @@ const Visualize = () => {
             <Panel position="bottom-right" className="bg-background/80 p-2 rounded border border-border text-xs text-muted-foreground">
               {result?.tables.length ?? 0} tables • {edges.length} relationships
             </Panel>
+            {/* Canvas guidance hint */}
+            {!hintDismissed && (result?.tables.length ?? 0) <= 4 && nodes.length > 0 && (
+              <Panel position="top-center" className="mt-4">
+                <div className="text-xs text-muted-foreground/60 bg-card/60 backdrop-blur-sm px-4 py-2 rounded-full border border-border/30 shadow-sm">
+                  Drag nodes to explore • hover to trace relationships
+                </div>
+              </Panel>
+            )}
           </ReactFlow>
         </div>
         {selectedTable && viewMode === "schema" && result && (

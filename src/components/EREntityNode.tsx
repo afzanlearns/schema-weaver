@@ -8,7 +8,7 @@ interface EREntityData {
 const EREntityNode = ({ data }: NodeProps) => {
   const { label } = data as EREntityData;
   return (
-    <div className="px-6 py-3 bg-card border-2 border-primary font-bold text-foreground text-center min-w-[120px] shadow-sm">
+    <div className="px-6 py-3 bg-card border-2 border-primary font-bold text-foreground text-center min-w-[120px] shadow-md transition-all duration-200 hover:shadow-lg hover:border-primary/80">
       <Handle type="target" position={Position.Top} className="!bg-primary !w-2 !h-2" />
       <Handle type="source" position={Position.Bottom} className="!bg-primary !w-2 !h-2" />
       <Handle type="source" position={Position.Left} id="left" className="!bg-primary !w-2 !h-2" />
