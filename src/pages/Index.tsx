@@ -14,7 +14,6 @@ import {
   Moon,
   Menu,
   Github,
-  BookOpen,
   ArrowRight,
   Terminal,
   Sparkles,
@@ -317,7 +316,7 @@ const Index = () => {
           </p>
 
           {/* ── Console Panel ── */}
-          <Card className="mt-10 glow-border border border-border bg-card/60 backdrop-blur-sm shadow-lg">
+          <Card className="mt-10 glow-border border border-border bg-card backdrop-blur-sm shadow-lg">
             <CardContent className="p-5 sm:p-6">
               {/* Drop zone */}
               <div
@@ -354,7 +353,7 @@ const Index = () => {
               {/* Textarea */}
               <Textarea
                 placeholder="-- Or paste your CREATE TABLE statements here..."
-                className="mt-4 min-h-[160px] font-mono text-[13px] leading-relaxed bg-background/50 border-border placeholder:text-muted-foreground/50"
+                className="mt-4 min-h-[160px] font-mono text-[13px] leading-relaxed bg-background border-border placeholder:text-muted-foreground/50"
                 value={sqlText}
                 onChange={(e) => setSqlText(e.target.value)}
               />
@@ -666,17 +665,12 @@ const Index = () => {
             <div className="flex items-center gap-3">
               <Button variant="ghost" size="icon" className="h-8 w-8" asChild>
                 <a
-                  href="https://github.com"
+                  href="https://github.com/afzanlearns/schema-weaver.git"
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label="GitHub"
                 >
                   <Github className="h-4 w-4" />
-                </a>
-              </Button>
-              <Button variant="ghost" size="icon" className="h-8 w-8" asChild>
-                <a href="#" aria-label="Documentation">
-                  <BookOpen className="h-4 w-4" />
                 </a>
               </Button>
             </div>

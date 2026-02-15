@@ -103,8 +103,26 @@ const Visualize = () => {
   // Canvas hint dismissed
   const [hintDismissed, setHintDismissed] = useState(false);
 
+  // Mobile detection for legend behavior split
+  const [isMobile, setIsMobile] = useState(false);
+  useEffect(() => {
+    const mq = window.matchMedia('(max-width: 767px)');
+    setIsMobile(mq.matches);
+    const handler = (e: MediaQueryListEvent) => setIsMobile(e.matches);
+    mq.addEventListener('change', handler);
+    return () => mq.removeEventListener('change', handler);
+  }, []);
+
   // Legend Highlight State
-  const [legendHighlight, setLegendHighlight] = useState<LegendType>(null);
+  const [legendHover, setLegendHover] = useState<LegendType>(null);
+  const [lockedLegend, setLockedLegend] = useState<LegendType>(null);
+
+  // Desktop: hover drives highlight. Mobile: click-lock drives highlight.
+  const legendHighlight = isMobile ? lockedLegend : (legendHover || lockedLegend);
+
+  const handleLegendClick = useCallback((type: LegendType) => {
+    setLockedLegend((prev) => (prev === type ? null : type));
+  }, []);
 
   const applyLayout = useCallback(async (parsed: ParseResult) => {
     if (viewMode === "er") {
@@ -268,107 +286,194 @@ const Visualize = () => {
 
   return (
     <div className="h-screen flex flex-col bg-background">
-      <div className="border-b border-border dark:border-[rgba(148,163,184,0.15)] px-4 py-2 flex items-center gap-2 flex-wrap bg-card dark:bg-[#020617]">
-        <Button variant="ghost" size="sm" onClick={() => navigate("/")}>
-          <ArrowLeft className="h-4 w-4 mr-1" /> Back
-        </Button>
-        <div className="h-4 w-px bg-border mx-1" />
+      {/* ═══ Toolbar ═══ */}
+      <div className="border-b border-border dark:border-[rgba(148,163,184,0.15)] bg-card dark:bg-[#020617]">
 
-        {/* View mode toggle */}
-        <div className="flex border border-border rounded overflow-hidden">
-          <button
-            className={`px-3 py-1 text-xs font-medium flex items-center gap-1 transition-colors ${viewMode === "schema" ? "bg-primary text-primary-foreground" : "bg-card text-foreground hover:bg-muted/30"
-              }`}
-            onClick={() => setViewMode("schema")}
-          >
-            <TableIcon className="h-3.5 w-3.5" /> Schema
-          </button>
-          <button
-            className={`px-3 py-1 text-xs font-medium flex items-center gap-1 transition-colors ${viewMode === "er" ? "bg-primary text-primary-foreground" : "bg-card text-foreground hover:bg-muted/30"
-              }`}
-            onClick={() => setViewMode("er")}
-          >
-            <Eye className="h-3.5 w-3.5" /> ER Diagram
-          </button>
-        </div>
+        {/* ── Desktop toolbar (md+): original single-row ── */}
+        <div className="hidden md:flex px-4 py-2 items-center gap-2 flex-wrap">
+          <Button variant="ghost" size="sm" onClick={() => navigate("/")}>
+            <ArrowLeft className="h-4 w-4 mr-1" /> Back
+          </Button>
+          <div className="h-4 w-px bg-border mx-1" />
 
-        <div className="h-4 w-px bg-border mx-1" />
+          <div className="flex border border-border rounded overflow-hidden">
+            <button
+              className={`px-3 py-1 text-xs font-medium flex items-center gap-1 transition-colors ${viewMode === "schema" ? "bg-primary text-primary-foreground" : "bg-card text-foreground hover:bg-muted/30"}`}
+              onClick={() => setViewMode("schema")}
+            >
+              <TableIcon className="h-3.5 w-3.5" /> Schema
+            </button>
+            <button
+              className={`px-3 py-1 text-xs font-medium flex items-center gap-1 transition-colors ${viewMode === "er" ? "bg-primary text-primary-foreground" : "bg-card text-foreground hover:bg-muted/30"}`}
+              onClick={() => setViewMode("er")}
+            >
+              <Eye className="h-3.5 w-3.5" /> ER Diagram
+            </button>
+          </div>
 
-        {/* Interaction Mode Toggle */}
-        <div className="flex border border-border rounded overflow-hidden">
-          <button
-            className={`px-3 py-1 text-xs font-medium flex items-center gap-1 transition-colors ${interactionMode === "inspect" ? "bg-secondary text-secondary-foreground" : "bg-card text-foreground hover:bg-muted/30"
-              }`}
-            onClick={() => setInteractionMode("inspect")}
-            title="Inspect Mode: Drag nodes, click to view details"
-          >
-            <Maximize2 className="h-3.5 w-3.5" /> Inspect
-          </button>
-          <button
-            className={`px-3 py-1 text-xs font-medium flex items-center gap-1 transition-colors ${interactionMode === "relations" ? "bg-secondary text-secondary-foreground" : "bg-card text-foreground hover:bg-muted/30"
-              }`}
-            onClick={() => setInteractionMode("relations")}
-            title="Relations Mode: Hover to trace connections, fixed layout"
-          >
-            <Minimize2 className="h-3.5 w-3.5" /> Relations
-          </button>
-        </div>
+          <div className="h-4 w-px bg-border mx-1" />
 
-        {/* Layout Controls */}
-        {viewMode === "schema" && (
-          <>
-            <div className="h-4 w-px bg-border/50 mx-1" />
-            <div className="flex items-center gap-1.5">
-              <Select value={layoutDir} onValueChange={(v: "RIGHT" | "DOWN") => setLayoutDir(v)}>
-                <SelectTrigger className="h-7 w-[100px] text-xs">
-                  <SelectValue placeholder="Direction" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="RIGHT">Horizontal</SelectItem>
-                  <SelectItem value="DOWN">Vertical</SelectItem>
-                </SelectContent>
-              </Select>
+          <div className="flex border border-border rounded overflow-hidden">
+            <button
+              className={`px-3 py-1 text-xs font-medium flex items-center gap-1 transition-colors ${interactionMode === "inspect" ? "bg-secondary text-secondary-foreground" : "bg-card text-foreground hover:bg-muted/30"}`}
+              onClick={() => setInteractionMode("inspect")}
+              title="Inspect Mode: Drag nodes, click to view details"
+            >
+              <Maximize2 className="h-3.5 w-3.5" /> Inspect
+            </button>
+            <button
+              className={`px-3 py-1 text-xs font-medium flex items-center gap-1 transition-colors ${interactionMode === "relations" ? "bg-secondary text-secondary-foreground" : "bg-card text-foreground hover:bg-muted/30"}`}
+              onClick={() => setInteractionMode("relations")}
+              title="Relations Mode: Hover to trace connections, fixed layout"
+            >
+              <Minimize2 className="h-3.5 w-3.5" /> Relations
+            </button>
+          </div>
 
-              <Select value={layoutSpacing} onValueChange={(v: any) => setLayoutSpacing(v)}>
-                <SelectTrigger className="h-7 w-[100px] text-xs">
-                  <SelectValue placeholder="Spacing" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="compact">Compact</SelectItem>
-                  <SelectItem value="balanced">Balanced</SelectItem>
-                  <SelectItem value="spacious">Spacious</SelectItem>
-                </SelectContent>
-              </Select>
-
-              <div className="flex items-center space-x-1.5">
-                <Switch id="grouping" checked={enableGrouping} onCheckedChange={setEnableGrouping} />
-                <Label htmlFor="grouping" className="text-xs">Cluster</Label>
+          {viewMode === "schema" && (
+            <>
+              <div className="h-4 w-px bg-border/50 mx-1" />
+              <div className="flex items-center gap-1.5">
+                <Select value={layoutDir} onValueChange={(v: "RIGHT" | "DOWN") => setLayoutDir(v)}>
+                  <SelectTrigger className="h-7 w-[100px] text-xs">
+                    <SelectValue placeholder="Direction" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="RIGHT">Horizontal</SelectItem>
+                    <SelectItem value="DOWN">Vertical</SelectItem>
+                  </SelectContent>
+                </Select>
+                <Select value={layoutSpacing} onValueChange={(v: any) => setLayoutSpacing(v)}>
+                  <SelectTrigger className="h-7 w-[100px] text-xs">
+                    <SelectValue placeholder="Spacing" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="compact">Compact</SelectItem>
+                    <SelectItem value="balanced">Balanced</SelectItem>
+                    <SelectItem value="spacious">Spacious</SelectItem>
+                  </SelectContent>
+                </Select>
+                <div className="flex items-center space-x-1.5">
+                  <Switch id="grouping-desktop" checked={enableGrouping} onCheckedChange={setEnableGrouping} />
+                  <Label htmlFor="grouping-desktop" className="text-xs">Cluster</Label>
+                </div>
+                <Button variant="ghost" size="sm" className="h-7 w-7 p-0" onClick={() => result && applyLayout(result)} title="Re-calculate Layout">
+                  <LayoutGrid className="h-3.5 w-3.5" />
+                </Button>
               </div>
+            </>
+          )}
 
-              <Button variant="ghost" size="sm" className="h-7 w-7 p-0" onClick={() => result && applyLayout(result)} title="Re-calculate Layout">
-                <LayoutGrid className="h-3.5 w-3.5" />
+          <div className="flex-1" />
+
+          <div className="flex items-center gap-1">
+            <ThemeToggle />
+            <div className="h-4 w-px bg-border mx-0.5" />
+            <Button variant="ghost" size="icon" onClick={handleExportMarkdown} title="Export Markdown">
+              <FileText className="h-4 w-4" />
+            </Button>
+            <Button variant="ghost" size="icon" onClick={handleExportJSON} title="Export JSON">
+              <FileJson className="h-4 w-4" />
+            </Button>
+            <Button variant="ghost" size="icon" onClick={handleGenerateAllTS} title="Copy TypeScript">
+              <Code className="h-4 w-4" />
+            </Button>
+            <Button variant="ghost" size="icon" onClick={handleSave} title="Save Diagram">
+              <Save className="h-4 w-4" />
+            </Button>
+          </div>
+        </div>
+
+        {/* ── Mobile toolbar (<md): compact two-row ── */}
+        <div className="md:hidden">
+          {/* Row 1: Back + View Toggle + Actions */}
+          <div className="px-3 py-1.5 flex items-center gap-1.5">
+            <Button variant="ghost" size="sm" className="h-8 px-2" onClick={() => navigate("/")}>
+              <ArrowLeft className="h-4 w-4" />
+            </Button>
+            <div className="h-4 w-px bg-border mx-0.5" />
+            <div className="flex border border-border rounded overflow-hidden">
+              <button
+                className={`px-2 py-1 text-xs font-medium flex items-center gap-1 transition-colors ${viewMode === "schema" ? "bg-primary text-primary-foreground" : "bg-card text-foreground hover:bg-muted/30"}`}
+                onClick={() => setViewMode("schema")}
+              >
+                <TableIcon className="h-3.5 w-3.5" /> Schema
+              </button>
+              <button
+                className={`px-2 py-1 text-xs font-medium flex items-center gap-1 transition-colors ${viewMode === "er" ? "bg-primary text-primary-foreground" : "bg-card text-foreground hover:bg-muted/30"}`}
+                onClick={() => setViewMode("er")}
+              >
+                <Eye className="h-3.5 w-3.5" /> ER
+              </button>
+            </div>
+            <div className="flex-1" />
+            <div className="flex items-center gap-0.5">
+              <ThemeToggle />
+              <Button variant="ghost" size="icon" className="h-8 w-8" onClick={handleExportMarkdown} title="Export Markdown">
+                <FileText className="h-4 w-4" />
+              </Button>
+              <Button variant="ghost" size="icon" className="h-8 w-8" onClick={handleExportJSON} title="Export JSON">
+                <FileJson className="h-4 w-4" />
+              </Button>
+              <Button variant="ghost" size="icon" className="h-8 w-8" onClick={handleGenerateAllTS} title="Copy TypeScript">
+                <Code className="h-4 w-4" />
+              </Button>
+              <Button variant="ghost" size="icon" className="h-8 w-8" onClick={handleSave} title="Save Diagram">
+                <Save className="h-4 w-4" />
               </Button>
             </div>
-          </>
-        )}
+          </div>
 
-        <div className="flex-1" />
+          {/* Row 2: Interaction Mode + Layout Controls */}
+          <div className="px-3 py-2 flex items-center gap-2 border-t border-border/30 flex-wrap">
+            <div className="flex border border-border rounded overflow-hidden">
+              <button
+                className={`px-3 py-1.5 text-xs font-medium flex items-center gap-1.5 transition-colors ${interactionMode === "inspect" ? "bg-secondary text-secondary-foreground" : "bg-card text-foreground hover:bg-muted/30"}`}
+                onClick={() => setInteractionMode("inspect")}
+                title="Inspect Mode"
+              >
+                <Maximize2 className="h-3 w-3" /> Inspect
+              </button>
+              <button
+                className={`px-3 py-1.5 text-xs font-medium flex items-center gap-1.5 transition-colors ${interactionMode === "relations" ? "bg-secondary text-secondary-foreground" : "bg-card text-foreground hover:bg-muted/30"}`}
+                onClick={() => setInteractionMode("relations")}
+                title="Relations Mode"
+              >
+                <Minimize2 className="h-3 w-3" /> Relations
+              </button>
+            </div>
 
-        <div className="flex items-center gap-1">
-          <ThemeToggle />
-          <div className="h-4 w-px bg-border mx-0.5" />
-          <Button variant="ghost" size="icon" onClick={handleExportMarkdown} title="Export Markdown">
-            <FileText className="h-4 w-4" />
-          </Button>
-          <Button variant="ghost" size="icon" onClick={handleExportJSON} title="Export JSON">
-            <FileJson className="h-4 w-4" />
-          </Button>
-          <Button variant="ghost" size="icon" onClick={handleGenerateAllTS} title="Copy TypeScript">
-            <Code className="h-4 w-4" />
-          </Button>
-          <Button variant="ghost" size="icon" onClick={handleSave} title="Save Diagram">
-            <Save className="h-4 w-4" />
-          </Button>
+            {viewMode === "schema" && (
+              <div className="flex items-center gap-2 flex-wrap">
+                <Select value={layoutDir} onValueChange={(v: "RIGHT" | "DOWN") => setLayoutDir(v)}>
+                  <SelectTrigger className="h-7 w-[100px] text-xs">
+                    <SelectValue placeholder="Direction" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="RIGHT">Horizontal</SelectItem>
+                    <SelectItem value="DOWN">Vertical</SelectItem>
+                  </SelectContent>
+                </Select>
+                <Select value={layoutSpacing} onValueChange={(v: any) => setLayoutSpacing(v)}>
+                  <SelectTrigger className="h-7 w-[100px] text-xs">
+                    <SelectValue placeholder="Spacing" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="compact">Compact</SelectItem>
+                    <SelectItem value="balanced">Balanced</SelectItem>
+                    <SelectItem value="spacious">Spacious</SelectItem>
+                  </SelectContent>
+                </Select>
+                <div className="flex items-center space-x-1.5">
+                  <Switch id="grouping-mobile" checked={enableGrouping} onCheckedChange={setEnableGrouping} />
+                  <Label htmlFor="grouping-mobile" className="text-xs">Cluster</Label>
+                </div>
+                <Button variant="ghost" size="sm" className="h-7 w-7 p-0" onClick={() => result && applyLayout(result)} title="Re-calculate Layout">
+                  <LayoutGrid className="h-3.5 w-3.5" />
+                </Button>
+              </div>
+            )}
+          </div>
         </div>
       </div>
 
@@ -406,7 +511,11 @@ const Visualize = () => {
               </Panel>
             )}
             {viewMode === "er" && (result?.tables.length ?? 0) > 0 && (
-              <ERLegend onHover={setLegendHighlight} />
+              <ERLegend
+                onHover={isMobile ? undefined : setLegendHover}
+                onClick={handleLegendClick}
+                lockedType={lockedLegend}
+              />
             )}
           </ReactFlow>
         </div>

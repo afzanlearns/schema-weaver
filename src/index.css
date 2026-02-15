@@ -249,9 +249,14 @@ All colors MUST be HSL.
    React Flow — Interaction & Transition
    ══════════════════════════════════════════════════════ */
 
-/* Smooth node movement on layout changes */
-.react-flow__node {
-  transition: transform 0.3s ease-in-out;
+/* Node base — transform transition intentionally omitted for drag performance */
+
+/* Responsive minimap — smaller on mobile only */
+@media (max-width: 767px) {
+  .react-flow__minimap {
+    width: 120px !important;
+    height: 80px !important;
+  }
 }
 
 /* Subtle hover glow on nodes */
@@ -292,7 +297,7 @@ All colors MUST be HSL.
 .react-flow__node,
 .react-flow__edge,
 .er-relationship-shape {
-  transition: opacity 0.3s ease, filter 0.3s ease, transform 0.3s ease-in-out, border-color 0.3s ease, box-shadow 0.3s ease;
+  transition: opacity 0.3s ease, filter 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
 }
 
 /* 1. Entity Highlight */

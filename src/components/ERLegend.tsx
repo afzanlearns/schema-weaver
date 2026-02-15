@@ -4,7 +4,9 @@ import { ChevronDown, ChevronUp, Info } from "lucide-react";
 export type LegendType = "entity" | "relationship" | "attribute" | "pk" | "cardinality-1" | "cardinality-n" | null;
 
 interface ERLegendProps {
-    onHover: (type: LegendType) => void;
+    onHover?: (type: LegendType) => void;
+    onClick?: (type: LegendType) => void;
+    lockedType?: LegendType;
 }
 
 const LegendItem = ({
@@ -13,29 +15,35 @@ const LegendItem = ({
     description,
     type,
     onHover,
+    onClick,
+    isLocked,
 }: {
     icon: React.ReactNode;
     label: string;
     description: string;
     type: LegendType;
-    onHover: (type: LegendType) => void;
+    onHover?: (type: LegendType) => void;
+    onClick?: (type: LegendType) => void;
+    isLocked?: boolean;
 }) => (
     <div
-        className="flex items-start gap-3 p-2 rounded-md hover:rounded-xl hover:bg-muted/30 transition-all duration-300 cursor-help group"
-        onMouseEnter={() => onHover(type)}
-        onMouseLeave={() => onHover(null)}
+        className={`flex items-start gap-3 p-2 rounded-md hover:rounded-xl hover:bg-muted/30 transition-all duration-300 cursor-pointer group ${isLocked ? "bg-primary/10 ring-1 ring-primary/40 rounded-xl" : ""
+            }`}
+        onMouseEnter={() => onHover?.(type)}
+        onMouseLeave={() => onHover?.(null)}
+        onClick={() => onClick?.(type)}
     >
-        <div className="mt-0.5 shrink-0 text-muted-foreground group-hover:text-primary transition-colors">
+        <div className={`mt-0.5 shrink-0 transition-colors ${isLocked ? "text-primary" : "text-muted-foreground group-hover:text-primary"}`}>
             {icon}
         </div>
         <div>
-            <div className="text-xs font-medium text-foreground">{label}</div>
+            <div className={`text-xs font-medium ${isLocked ? "text-primary" : "text-foreground"}`}>{label}</div>
             <div className="text-[10px] text-muted-foreground leading-tight">{description}</div>
         </div>
     </div>
 );
 
-export const ERLegend = ({ onHover }: ERLegendProps) => {
+export const ERLegend = ({ onHover, onClick, lockedType }: ERLegendProps) => {
     const [isOpen, setIsOpen] = useState(false);
 
     return (
@@ -51,7 +59,7 @@ export const ERLegend = ({ onHover }: ERLegendProps) => {
 
             {isOpen && (
                 <div
-                    className="pointer-events-auto w-72 bg-card border border-border/50 shadow-xl rounded-lg overflow-hidden backdrop-blur-sm animate-in fade-in zoom-in-95 duration-200"
+                    className="pointer-events-auto w-64 sm:w-72 bg-card border border-border/50 shadow-xl rounded-lg overflow-hidden backdrop-blur-sm animate-in fade-in zoom-in-95 duration-200"
                 >
                     <div className="px-3 py-2 bg-muted/20 border-b border-border/50 text-xs font-semibold text-foreground">
                         ER Notation Guide
@@ -60,6 +68,8 @@ export const ERLegend = ({ onHover }: ERLegendProps) => {
                         <LegendItem
                             type="entity"
                             onHover={onHover}
+                            onClick={onClick}
+                            isLocked={lockedType === "entity"}
                             icon={<div className="w-4 h-3 border-2 border-primary rounded-[2px]" />}
                             label="Entity"
                             description="Represents a database table or object."
@@ -67,6 +77,8 @@ export const ERLegend = ({ onHover }: ERLegendProps) => {
                         <LegendItem
                             type="relationship"
                             onHover={onHover}
+                            onClick={onClick}
+                            isLocked={lockedType === "relationship"}
                             icon={
                                 <div className="w-4 h-4 flex items-center justify-center">
                                     <div className="w-3 h-3 border border-foreground/50 rotate-45 bg-muted/20" />
@@ -78,6 +90,8 @@ export const ERLegend = ({ onHover }: ERLegendProps) => {
                         <LegendItem
                             type="attribute"
                             onHover={onHover}
+                            onClick={onClick}
+                            isLocked={lockedType === "attribute"}
                             icon={<div className="w-4 h-3 border border-foreground/50 rounded-full" />}
                             label="Attribute"
                             description="A property of an entity."
@@ -85,6 +99,8 @@ export const ERLegend = ({ onHover }: ERLegendProps) => {
                         <LegendItem
                             type="pk"
                             onHover={onHover}
+                            onClick={onClick}
+                            isLocked={lockedType === "pk"}
                             icon={
                                 <div className="w-4 h-3 border border-foreground/50 rounded-full flex items-center justify-center">
                                     <div className="w-full h-px bg-foreground/50" />
@@ -97,6 +113,8 @@ export const ERLegend = ({ onHover }: ERLegendProps) => {
                         <LegendItem
                             type="cardinality-1"
                             onHover={onHover}
+                            onClick={onClick}
+                            isLocked={lockedType === "cardinality-1"}
                             icon={<div className="font-mono text-[10px] font-bold">1</div>}
                             label="One Cardinality"
                             description="Exactly one instance participates."
@@ -104,6 +122,8 @@ export const ERLegend = ({ onHover }: ERLegendProps) => {
                         <LegendItem
                             type="cardinality-n"
                             onHover={onHover}
+                            onClick={onClick}
+                            isLocked={lockedType === "cardinality-n"}
                             icon={<div className="font-mono text-[10px] font-bold">N</div>}
                             label="Many Cardinality"
                             description="Multiple instances can participate."
