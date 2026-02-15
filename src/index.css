@@ -96,55 +96,70 @@ All colors MUST be HSL.
   }
 
   .dark {
+    /* Canvas & Base — premium navy (#0F172A) */
     --background: 222 47% 11%;
-    --foreground: 210 40% 98%;
+    --foreground: 210 20% 98%;
 
-    --card: 217 32% 17%;
-    --card-foreground: 210 40% 98%;
+    /* Node cards — elevated surface (#111827) */
+    --card: 220 26% 12%;
+    --card-foreground: 210 20% 98%;
 
-    --popover: 215 24% 26%;
-    --popover-foreground: 210 40% 98%;
+    /* Popovers / dropdowns (#1F2937) */
+    --popover: 215 28% 17%;
+    --popover-foreground: 210 20% 98%;
 
-    --primary: 212 26% 83%;
-    --primary-foreground: 228 84% 4%;
+    /* Blue accent (#60A5FA) */
+    --primary: 217 91% 68%;
+    --primary-foreground: 222 47% 11%;
 
-    --secondary: 215 19% 34%;
-    --secondary-foreground: 210 40% 98%;
+    /* Active surfaces (#1F2937) */
+    --secondary: 215 28% 17%;
+    --secondary-foreground: 210 20% 98%;
 
-    --muted: 215 16% 46%;
-    --muted-foreground: 210 40% 98%;
+    /* Metadata text (#94A3B8) */
+    --muted: 215 16% 47%;
+    --muted-foreground: 215 16% 65%;
 
-    --accent: 228 84% 4%;
-    --accent-foreground: 215 20% 65%;
+    /* Accent surfaces (#1F2937) */
+    --accent: 215 28% 17%;
+    --accent-foreground: 210 20% 98%;
 
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 85% 97%;
 
-    --border: 215 19% 34%;
-    --input: 215 19% 34%;
-    --ring: 212 26% 83%;
-    --sidebar-background: 240 5.9% 10%;
-    --sidebar-foreground: 210 40% 98%;
-    --sidebar-primary: 212 26% 83%;
-    --sidebar-primary-foreground: 228 84% 4%;
-    --sidebar-accent: 215 20% 65%;
-    --sidebar-accent-foreground: 228 84% 4%;
-    --sidebar-border: 215 19% 34%;
-    --sidebar-ring: 212 26% 83%;
-    --chart-1: 215 12% 83%;
-    --chart-2: 212 26% 83%;
-    --chart-3: 215 20% 65%;
+    /* Borders — visible but subtle */
+    --border: 215 20% 25%;
+    --input: 215 20% 25%;
+    --ring: 217 91% 68%;
+
+    /* Sidebar */
+    --sidebar-background: 229 84% 5%;
+    --sidebar-foreground: 210 20% 98%;
+    --sidebar-primary: 217 91% 68%;
+    --sidebar-primary-foreground: 222 47% 11%;
+    --sidebar-accent: 215 28% 17%;
+    --sidebar-accent-foreground: 210 20% 98%;
+    --sidebar-border: 215 20% 25%;
+    --sidebar-ring: 217 91% 68%;
+
+    /* Charts */
+    --chart-1: 215 14% 91%;
+    --chart-2: 217 91% 68%;
+    --chart-3: 215 16% 65%;
     --chart-4: 217 10% 64%;
-    --chart-5: 215 16% 46%;
-    --sidebar: 217 32% 17%;
-    --shadow-2xs: 0 1px 3px 0px hsl(0 0% 0% / 0.05);
-    --shadow-xs: 0 1px 3px 0px hsl(0 0% 0% / 0.05);
-    --shadow-sm: 0 1px 3px 0px hsl(0 0% 0% / 0.1), 0 1px 2px -1px hsl(0 0% 0% / 0.1);
-    --shadow: 0 1px 3px 0px hsl(0 0% 0% / 0.1), 0 1px 2px -1px hsl(0 0% 0% / 0.1);
-    --shadow-md: 0 1px 3px 0px hsl(0 0% 0% / 0.1), 0 2px 4px -1px hsl(0 0% 0% / 0.1);
-    --shadow-lg: 0 1px 3px 0px hsl(0 0% 0% / 0.1), 0 4px 6px -1px hsl(0 0% 0% / 0.1);
-    --shadow-xl: 0 1px 3px 0px hsl(0 0% 0% / 0.1), 0 8px 10px -1px hsl(0 0% 0% / 0.1);
-    --shadow-2xl: 0 1px 3px 0px hsl(0 0% 0% / 0.25);
+    --chart-5: 224 76% 40%;
+
+    --sidebar: 220 26% 12%;
+
+    /* Stronger dark shadows for depth */
+    --shadow-2xs: 0 1px 3px 0px hsl(0 0% 0% / 0.1);
+    --shadow-xs: 0 1px 3px 0px hsl(0 0% 0% / 0.15);
+    --shadow-sm: 0 2px 6px 0px hsl(0 0% 0% / 0.2), 0 1px 2px -1px hsl(0 0% 0% / 0.15);
+    --shadow: 0 4px 12px 0px hsl(0 0% 0% / 0.25), 0 1px 3px -1px hsl(0 0% 0% / 0.15);
+    --shadow-md: 0 6px 18px 0px hsl(0 0% 0% / 0.3), 0 2px 6px -1px hsl(0 0% 0% / 0.2);
+    --shadow-lg: 0 8px 24px 0px hsl(0 0% 0% / 0.35), 0 4px 8px -1px hsl(0 0% 0% / 0.2);
+    --shadow-xl: 0 12px 32px 0px hsl(0 0% 0% / 0.4), 0 8px 12px -1px hsl(0 0% 0% / 0.2);
+    --shadow-2xl: 0 16px 48px 0px hsl(0 0% 0% / 0.5);
   }
 }
 
@@ -175,40 +190,64 @@ All colors MUST be HSL.
   }
 
   .dark .glow-border:hover {
-    box-shadow: 0 0 40px -5px hsl(var(--primary) / 0.2),
-      0 0 15px -5px hsl(var(--primary) / 0.15);
+    box-shadow: 0 0 40px -5px hsl(var(--primary) / 0.25),
+      0 0 15px -5px hsl(var(--primary) / 0.2);
   }
 }
 
-/* ── React Flow dark-mode overrides ── */
+/* ══════════════════════════════════════════════════════
+   React Flow — Dark Mode Overrides
+   ══════════════════════════════════════════════════════ */
+
+/* ── Controls ── */
 .dark .react-flow__controls {
-  background: hsl(var(--card));
-  border: 1px solid hsl(var(--border));
+  background: #020617;
+  border: 1px solid rgba(148, 163, 184, 0.15);
   border-radius: 0.5rem;
-  box-shadow: 0 2px 8px hsl(0 0% 0% / 0.3);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
 }
 
 .dark .react-flow__controls button {
   background: transparent;
-  border-bottom: 1px solid hsl(var(--border));
-  color: hsl(var(--foreground));
-  fill: hsl(var(--foreground));
+  border-bottom: 1px solid rgba(148, 163, 184, 0.12);
+  color: #E5E7EB;
+  fill: #E5E7EB;
 }
 
 .dark .react-flow__controls button:hover {
-  background: hsl(var(--muted) / 0.2);
+  background: rgba(148, 163, 184, 0.08);
 }
 
 .dark .react-flow__controls button svg {
-  fill: hsl(var(--foreground));
+  fill: #E5E7EB;
 }
 
+/* ── Handles ── */
 .dark .react-flow__handle {
-  background: hsl(var(--primary));
-  border-color: hsl(var(--border));
+  background: #60A5FA;
+  border-color: rgba(148, 163, 184, 0.25);
 }
 
-/* ── React Flow interaction & transition refinements ── */
+/* ── MiniMap ── */
+.dark .react-flow__minimap {
+  background: #020617;
+  border: 1px solid rgba(148, 163, 184, 0.15);
+  border-radius: 0.375rem;
+}
+
+/* ── Attribution / Watermark ── */
+.react-flow__attribution {
+  background: transparent !important;
+  border: none !important;
+}
+
+.react-flow__attribution a {
+  color: rgba(148, 163, 184, 0.4) !important;
+}
+
+/* ══════════════════════════════════════════════════════
+   React Flow — Interaction & Transition
+   ══════════════════════════════════════════════════════ */
 
 /* Smooth node movement on layout changes */
 .react-flow__node {
@@ -217,23 +256,30 @@ All colors MUST be HSL.
 
 /* Subtle hover glow on nodes */
 .react-flow__node:hover {
-  filter: drop-shadow(0 0 6px hsl(var(--primary) / 0.15));
+  filter: drop-shadow(0 0 8px rgba(96, 165, 250, 0.2));
+}
+
+/* Edge defaults in dark mode */
+.dark .react-flow__edge-path {
+  stroke-width: 2;
 }
 
 /* Edge hover feedback */
 .react-flow__edge:hover .react-flow__edge-path {
-  stroke-width: 2 !important;
-  stroke: hsl(var(--primary)) !important;
+  stroke-width: 3 !important;
+  stroke: #60A5FA !important;
+  filter: drop-shadow(0 0 12px rgba(96, 165, 250, 0.6));
 }
 
-/* Background grid contrast */
-.react-flow__background pattern circle {
-  fill: hsl(var(--muted-foreground) / 0.15);
+/* Background grid dots */
+.dark .react-flow__background pattern circle,
+.dark .react-flow__background pattern rect {
+  fill: rgba(148, 163, 184, 0.12) !important;
 }
 
-/* MiniMap dark mode */
-.dark .react-flow__minimap {
-  background: hsl(var(--card));
-  border: 1px solid hsl(var(--border));
-  border-radius: 0.375rem;
+/* Selected node focus */
+.dark .react-flow__node.selected>div {
+  outline: 2px solid #60A5FA;
+  outline-offset: 1px;
+  box-shadow: 0 0 20px rgba(96, 165, 250, 0.35);
 }

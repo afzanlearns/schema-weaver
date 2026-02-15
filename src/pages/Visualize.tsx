@@ -264,7 +264,7 @@ const Visualize = () => {
 
   return (
     <div className="h-screen flex flex-col bg-background">
-      <div className="border-b border-border px-4 py-2 flex items-center gap-2 flex-wrap bg-card">
+      <div className="border-b border-border dark:border-[rgba(148,163,184,0.15)] px-4 py-2 flex items-center gap-2 flex-wrap bg-card dark:bg-[#020617]">
         <Button variant="ghost" size="sm" onClick={() => navigate("/")}>
           <ArrowLeft className="h-4 w-4 mr-1" /> Back
         </Button>

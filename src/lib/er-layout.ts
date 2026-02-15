@@ -201,6 +201,9 @@ export function generateERNodesAndEdges(
         fontWeight: 700,
         fill: "hsl(var(--foreground))",
       },
+      labelBgStyle: { fill: "hsl(var(--card))", fillOpacity: 0.95 },
+      labelBgPadding: [4, 3] as [number, number],
+      labelBgBorderRadius: 3,
     });
 
     edges.push({
@@ -214,6 +217,9 @@ export function generateERNodesAndEdges(
         fontWeight: 700,
         fill: "hsl(var(--foreground))",
       },
+      labelBgStyle: { fill: "hsl(var(--card))", fillOpacity: 0.95 },
+      labelBgPadding: [4, 3] as [number, number],
+      labelBgBorderRadius: 3,
     });
   });
 
