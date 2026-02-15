@@ -1,4 +1,4 @@
-
+---
 # Schema Weaver
 
 Schema Weaver is a developer tool that converts raw SQL schema definitions into interactive visual diagrams and usable TypeScript interfaces. It helps engineers quickly understand unfamiliar databases by providing both structural and conceptual views of the schema without executing any SQL or requiring a database connection.
@@ -30,7 +30,10 @@ The project demonstrates:
 - Thoughtful UX design for complex technical visualization
 - Real-world developer tooling concepts such as type generation and documentation export
 
----
+--- 
+
+## Desktop-First Experience
+Schema Weaver is optimized for desktop and laptop screens to provide the best diagram navigation, drag interactions, and layout clarity. While it is accessible on mobile devices, the full interactive experience is best viewed on a PC or larger display.
 
 ## Key Features
 
