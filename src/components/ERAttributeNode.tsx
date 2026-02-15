@@ -13,6 +13,7 @@ const ERAttributeNode = ({ data }: NodeProps) => {
     <div
       className={`px-4 py-1.5 text-[11px] text-center min-w-[80px] transition-all duration-200 ${isForeignKey ? "border-dashed border" : "border"
         }`}
+      data-pk={isPrimaryKey}
       style={{
         borderRadius: "50%",
         backgroundColor: "var(--attr-bg, hsl(var(--card)))",

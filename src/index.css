@@ -283,3 +283,100 @@ All colors MUST be HSL.
   outline-offset: 1px;
   box-shadow: 0 0 20px rgba(96, 165, 250, 0.35);
 }
+
+/* ══════════════════════════════════════════════════════
+   ER Legend Interaction Styles
+   ══════════════════════════════════════════════════════ */
+
+/* Base transitions for smooth dimming */
+.react-flow__node,
+.react-flow__edge,
+.er-relationship-shape {
+  transition: opacity 0.3s ease, filter 0.3s ease, transform 0.3s ease-in-out, border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* 1. Entity Highlight */
+.legend-highlight-entity .react-flow__node:not(.react-flow__node-erEntity),
+/* 1. Entity Highlight */
+.legend-highlight-entity .react-flow__node:not(.react-flow__node-erEntity),
+.legend-highlight-entity .react-flow__edge {
+  opacity: 0.15;
+}
+
+.legend-highlight-entity .react-flow__node-erEntity>div {
+  border-color: #60A5FA !important;
+  border-width: 3px !important;
+  box-shadow: none !important;
+  transform: scale(1.02);
+}
+
+/* 2. Relationship Highlight */
+.legend-highlight-relationship .react-flow__node:not(.react-flow__node-erRelationship),
+.legend-highlight-relationship .react-flow__edge {
+  opacity: 0.15;
+}
+
+.legend-highlight-relationship .er-relationship-shape {
+  border-color: #60A5FA !important;
+  border-width: 3px !important;
+  box-shadow: none !important;
+  transform: rotate(45deg) scale(1.05) !important;
+}
+
+/* 3. Attribute Highlight */
+.legend-highlight-attribute .react-flow__node:not(.react-flow__node-erAttribute),
+.legend-highlight-attribute .react-flow__edge {
+  opacity: 0.15;
+}
+
+.legend-highlight-attribute .react-flow__node-erAttribute>div {
+  border-color: #60A5FA !important;
+  border-width: 3px !important;
+  box-shadow: none !important;
+  transform: scale(1.05);
+}
+
+/* 4. PK Highlight */
+.legend-highlight-pk .react-flow__node:not(:has([data-pk="true"])),
+.legend-highlight-pk .react-flow__edge {
+  opacity: 0.15;
+}
+
+.legend-highlight-pk .react-flow__node:has([data-pk="true"])>div {
+  border-color: #60A5FA !important;
+  border-width: 3px !important;
+  box-shadow: none !important;
+  transform: scale(1.1);
+}
+
+/* 5. Cardinality 1 Highlight */
+.legend-highlight-cardinality-1 .react-flow__node,
+.legend-highlight-cardinality-1 .react-flow__edge:not(.edge-cardinality-1) {
+  opacity: 0.15;
+}
+
+.legend-highlight-cardinality-1 .edge-cardinality-1 .react-flow__edge-path {
+  stroke: #60A5FA !important;
+  stroke-width: 3px !important;
+  filter: drop-shadow(0 0 8px rgba(96, 165, 250, 0.6));
+}
+
+.legend-highlight-cardinality-1 .edge-cardinality-1 {
+  opacity: 1 !important;
+}
+
+/* 6. Cardinality N Highlight */
+.legend-highlight-cardinality-n .react-flow__node,
+.legend-highlight-cardinality-n .react-flow__edge:not(.edge-cardinality-n) {
+  opacity: 0.15;
+}
+
+.legend-highlight-cardinality-n .edge-cardinality-n .react-flow__edge-path {
+  stroke: #60A5FA !important;
+  stroke-width: 3px !important;
+  filter: drop-shadow(0 0 8px rgba(96, 165, 250, 0.6));
+}
+
+.legend-highlight-cardinality-n .edge-cardinality-n {
+  opacity: 1 !important;
+}

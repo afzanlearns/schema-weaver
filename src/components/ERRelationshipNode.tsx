@@ -11,7 +11,7 @@ const ERRelationshipNode = ({ data }: NodeProps) => {
     <div className="relative flex items-center justify-center" style={{ width: 100, height: 100 }}>
       {/* Diamond — uses card background for contrast against canvas */}
       <div
-        className="absolute inset-0 bg-card border-[1.5px] border-primary/50 transition-all duration-200 hover:border-primary dark:shadow-[0_4px_16px_rgba(0,0,0,0.5)]"
+        className="er-relationship-shape absolute inset-0 bg-card border-[1.5px] border-primary/50 transition-all duration-200 hover:border-primary dark:shadow-[0_4px_16px_rgba(0,0,0,0.5)]"
         style={{
           transform: "rotate(45deg)",
           width: "70px",

@@ -195,6 +195,7 @@ export function generateERNodesAndEdges(
       source: `entity-${rel.fromTable}`,
       target: relId,
       label: fromLabel,
+      className: "edge-cardinality-n",
       style: { stroke: "hsl(var(--primary))", strokeWidth: 2 },
       labelStyle: {
         fontSize: 12,
@@ -211,6 +212,7 @@ export function generateERNodesAndEdges(
       source: relId,
       target: `entity-${rel.toTable}`,
       label: toLabel,
+      className: "edge-cardinality-1",
       style: { stroke: "hsl(var(--primary))", strokeWidth: 2 },
       labelStyle: {
         fontSize: 12,

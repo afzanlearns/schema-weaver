@@ -52,6 +52,7 @@ import {
 } from "lucide-react";
 import { toast } from "sonner";
 import { useTheme } from "next-themes";
+import { ERLegend, type LegendType } from "@/components/ERLegend";
 
 const schemaNodeTypes = { tableNode: TableNode };
 const erNodeTypes = {
@@ -101,6 +102,9 @@ const Visualize = () => {
 
   // Canvas hint dismissed
   const [hintDismissed, setHintDismissed] = useState(false);
+
+  // Legend Highlight State
+  const [legendHighlight, setLegendHighlight] = useState<LegendType>(null);
 
   const applyLayout = useCallback(async (parsed: ParseResult) => {
     if (viewMode === "er") {
@@ -369,7 +373,7 @@ const Visualize = () => {
       </div>
 
       <div className="flex-1 flex overflow-hidden">
-        <div className="flex-1 relative">
+        <div className={`flex-1 relative ${legendHighlight ? `legend-highlight-${legendHighlight}` : ''}`}>
           <ReactFlow
             nodes={nodes}
             edges={edges}
@@ -400,6 +404,9 @@ const Visualize = () => {
                   Drag nodes to explore • hover to trace relationships
                 </div>
               </Panel>
+            )}
+            {viewMode === "er" && (result?.tables.length ?? 0) > 0 && (
+              <ERLegend onHover={setLegendHighlight} />
             )}
           </ReactFlow>
         </div>
