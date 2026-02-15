@@ -70,7 +70,6 @@ All diagrams and parsed schema data are stored locally in the browser. No databa
 
 ## Tech Stack
 
-- Next.js 14 (App Router)
 - React 18
 - TypeScript
 - Tailwind CSS
