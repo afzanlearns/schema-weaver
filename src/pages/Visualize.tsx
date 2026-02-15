@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { toPng } from "html-to-image";
 import {
   ReactFlow,
   Background,
@@ -25,6 +26,7 @@ import EREntityNode from "@/components/EREntityNode";
 import ERAttributeNode from "@/components/ERAttributeNode";
 import ERRelationshipNode from "@/components/ERRelationshipNode";
 import TableDetailPanel from "@/components/TableDetailPanel";
+import { SnapshotModal } from "@/components/SnapshotModal";
 import { Button } from "@/components/ui/button";
 import {
   Select,
@@ -42,6 +44,7 @@ import {
   FileJson,
   Code,
   Save,
+  Camera,
   Database,
   Eye,
   Table as TableIcon,
@@ -122,6 +125,26 @@ const Visualize = () => {
 
   const handleLegendClick = useCallback((type: LegendType) => {
     setLockedLegend((prev) => (prev === type ? null : type));
+  }, []);
+
+  // Snapshot state
+  const [snapshotUrl, setSnapshotUrl] = useState<string | null>(null);
+
+  const handleSnapshot = useCallback(async () => {
+    const el = document.querySelector(".react-flow") as HTMLElement;
+    if (!el) return;
+    toast.info("Capturing snapshot…");
+    try {
+      const dataUrl = await toPng(el, {
+        backgroundColor: getComputedStyle(document.documentElement).getPropertyValue("--background").trim()
+          ? `hsl(${getComputedStyle(document.documentElement).getPropertyValue("--background").trim()})`
+          : "#ffffff",
+        pixelRatio: 2,
+      });
+      setSnapshotUrl(dataUrl);
+    } catch (err) {
+      toast.error("Failed to capture snapshot");
+    }
   }, []);
 
   const applyLayout = useCallback(async (parsed: ParseResult) => {
@@ -381,6 +404,10 @@ const Visualize = () => {
             <Button variant="ghost" size="icon" onClick={handleSave} title="Save Diagram">
               <Save className="h-4 w-4" />
             </Button>
+            <div className="h-4 w-px bg-border mx-0.5" />
+            <Button variant="ghost" size="icon" onClick={handleSnapshot} title="Snapshot">
+              <Camera className="h-4 w-4" />
+            </Button>
           </div>
         </div>
 
@@ -420,6 +447,9 @@ const Visualize = () => {
               </Button>
               <Button variant="ghost" size="icon" className="h-8 w-8" onClick={handleSave} title="Save Diagram">
                 <Save className="h-4 w-4" />
+              </Button>
+              <Button variant="ghost" size="icon" className="h-8 w-8" onClick={handleSnapshot} title="Snapshot">
+                <Camera className="h-4 w-4" />
               </Button>
             </div>
           </div>
@@ -528,6 +558,11 @@ const Visualize = () => {
           />
         )}
       </div>
+
+      {/* Snapshot modal */}
+      {snapshotUrl && (
+        <SnapshotModal imageDataUrl={snapshotUrl} onClose={() => setSnapshotUrl(null)} />
+      )}
     </div>
   );
 };
