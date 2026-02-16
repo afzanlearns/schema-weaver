@@ -262,7 +262,11 @@ const Visualize = () => {
         style: {
           ...edge.style,
           strokeOpacity: !focusedNodeId || edge.source === focusedNodeId || edge.target === focusedNodeId ? 1 : 0.1,
-          stroke: !focusedNodeId || edge.source === focusedNodeId || edge.target === focusedNodeId ? "hsl(var(--primary))" : "hsl(var(--muted))",
+          stroke: !focusedNodeId
+            ? "hsl(var(--muted-foreground))"
+            : edge.source === focusedNodeId || edge.target === focusedNodeId
+              ? "hsl(var(--primary))"
+              : "hsl(var(--muted))",
         },
         animated: edge.source === focusedNodeId || edge.target === focusedNodeId,
       }))
@@ -360,14 +364,14 @@ const Visualize = () => {
 
           <div className="flex border border-border rounded overflow-hidden">
             <button
-              className={`px-3 py-1 text-xs font-medium flex items-center gap-1 transition-colors ${interactionMode === "inspect" ? "bg-secondary text-secondary-foreground" : "bg-card text-foreground hover:bg-muted/30"}`}
+              className={`px-3 py-1 text-xs font-medium flex items-center gap-1 transition-colors ${interactionMode === "inspect" ? "bg-primary text-primary-foreground" : "bg-card text-foreground hover:bg-muted/30"}`}
               onClick={() => setInteractionMode("inspect")}
               title="Inspect Mode: Drag nodes, click to view details"
             >
               <Maximize2 className="h-3.5 w-3.5" /> Inspect
             </button>
             <button
-              className={`px-3 py-1 text-xs font-medium flex items-center gap-1 transition-colors ${interactionMode === "relations" ? "bg-secondary text-secondary-foreground" : "bg-card text-foreground hover:bg-muted/30"}`}
+              className={`px-3 py-1 text-xs font-medium flex items-center gap-1 transition-colors ${interactionMode === "relations" ? "bg-primary text-primary-foreground" : "bg-card text-foreground hover:bg-muted/30"}`}
               onClick={() => setInteractionMode("relations")}
               title="Relations Mode: Hover to trace connections, fixed layout"
             >
@@ -499,14 +503,14 @@ const Visualize = () => {
           <div className="px-3 py-2 flex items-center gap-2 border-t border-border/30 flex-wrap">
             <div className="flex border border-border rounded overflow-hidden">
               <button
-                className={`px-3 py-1.5 text-xs font-medium flex items-center gap-1.5 transition-colors ${interactionMode === "inspect" ? "bg-secondary text-secondary-foreground" : "bg-card text-foreground hover:bg-muted/30"}`}
+                className={`px-3 py-1.5 text-xs font-medium flex items-center gap-1.5 transition-colors ${interactionMode === "inspect" ? "bg-primary text-primary-foreground" : "bg-card text-foreground hover:bg-muted/30"}`}
                 onClick={() => setInteractionMode("inspect")}
                 title="Inspect Mode"
               >
                 <Maximize2 className="h-3 w-3" /> Inspect
               </button>
               <button
-                className={`px-3 py-1.5 text-xs font-medium flex items-center gap-1.5 transition-colors ${interactionMode === "relations" ? "bg-secondary text-secondary-foreground" : "bg-card text-foreground hover:bg-muted/30"}`}
+                className={`px-3 py-1.5 text-xs font-medium flex items-center gap-1.5 transition-colors ${interactionMode === "relations" ? "bg-primary text-primary-foreground" : "bg-card text-foreground hover:bg-muted/30"}`}
                 onClick={() => setInteractionMode("relations")}
                 title="Relations Mode"
               >
@@ -548,7 +552,7 @@ const Visualize = () => {
         </div>
       </div>
 
-      <div className="flex-1 flex overflow-hidden min-h-0">
+      <div className="flex-1 flex overflow-hidden min-h-0 relative">
         <div className={`flex-1 relative min-h-0 ${legendHighlight ? `legend-highlight-${legendHighlight}` : ''}`} style={{ touchAction: 'none' }}>
           <ReactFlow
             nodes={nodes}

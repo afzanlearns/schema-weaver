@@ -9,7 +9,7 @@ const EREntityNode = ({ data }: NodeProps) => {
   const { label } = data as EREntityData;
   return (
     <div
-      className="px-6 py-3 bg-card border-[1.5px] border-primary font-bold text-foreground text-center min-w-[120px] transition-all duration-200 hover:shadow-lg"
+      className="px-6 py-3 bg-[#E3E9F2] dark:bg-[#1B2335] border-[1.5px] border-primary font-bold text-foreground text-center min-w-[120px] transition-all duration-200 hover:shadow-lg hover:border-primary"
       style={{
         boxShadow: "0 8px 24px rgba(0,0,0,0.35)",
       }}

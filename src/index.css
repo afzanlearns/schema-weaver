@@ -303,6 +303,15 @@ All colors MUST be HSL.
   box-shadow: 0 0 20px rgba(96, 165, 250, 0.35);
 }
 
+/* Hide selection box for Diamond nodes */
+.react-flow__node-erRelationship.selected>div,
+.react-flow__node-erRelationship.selected:hover>div {
+  outline: none !important;
+  box-shadow: none !important;
+  border-color: #60A5FA !important;
+  /* Keep border color change to indicate selection, but no box */
+}
+
 /* ══════════════════════════════════════════════════════
    ER Legend Interaction Styles
    ══════════════════════════════════════════════════════ */

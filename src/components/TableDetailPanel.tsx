@@ -70,7 +70,7 @@ const TableDetailPanel: React.FC<TableDetailPanelProps> = ({
   }, [table, relationships]);
 
   return (
-    <div className="w-80 border-l border-border bg-card h-full overflow-y-auto">
+    <div className="w-72 border-l border-border bg-card h-full overflow-y-auto absolute right-0 top-0 z-10 shadow-xl">
       {/* Header */}
       <div className="flex items-center justify-between px-4 py-3 border-b border-border">
         <h3 className="font-semibold text-foreground">{table.name}</h3>
